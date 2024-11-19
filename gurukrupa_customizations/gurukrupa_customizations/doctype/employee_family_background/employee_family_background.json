@@ -1,0 +1,137 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-06-16 12:17:56.488301",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "name1",
+  "relation",
+  "occupation",
+  "column_break_s8hpv",
+  "birth_date",
+  "age",
+  "section_break_doivn",
+  "document_name",
+  "column_break_e6fej",
+  "document_number",
+  "section_break_pjtyp",
+  "same_as_present",
+  "address",
+  "column_break_fphhe",
+  "same_as_permanent",
+  "section_break_cj5cq",
+  "is_nominee",
+  "nominee_share"
+ ],
+ "fields": [
+  {
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name"
+  },
+  {
+   "fieldname": "relation",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Relation",
+   "options": "Employee Relations"
+  },
+  {
+   "fieldname": "occupation",
+   "fieldtype": "Data",
+   "label": "Occupation"
+  },
+  {
+   "fieldname": "column_break_s8hpv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "birth_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Birth Date"
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Data",
+   "label": "Age"
+  },
+  {
+   "fieldname": "section_break_doivn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "document_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Document Name"
+  },
+  {
+   "fieldname": "column_break_e6fej",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "document_number",
+   "fieldtype": "Data",
+   "label": "Document Number"
+  },
+  {
+   "fieldname": "section_break_pjtyp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "same_as_present",
+   "fieldtype": "Check",
+   "label": "Same as Present"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Address"
+  },
+  {
+   "fieldname": "column_break_fphhe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "same_as_permanent",
+   "fieldtype": "Check",
+   "label": "Same as Permanent"
+  },
+  {
+   "fieldname": "section_break_cj5cq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_nominee",
+   "fieldtype": "Check",
+   "label": "Is Nominee"
+  },
+  {
+   "fieldname": "nominee_share",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Nominee Share"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-07-06 16:13:53.761820",
+ "modified_by": "Administrator",
+ "module": "Gurukrupa Customizations",
+ "name": "Employee Family Background",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

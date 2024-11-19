@@ -1,0 +1,191 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2023-03-02 12:56:45.384933",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "attendance_date",
+  "attn_ot_hrs",
+  "first_in",
+  "last_out",
+  "weekly_off",
+  "column_break_sogvo",
+  "allow",
+  "allowed_ot",
+  "remarks",
+  "attendance",
+  "is_cancelled",
+  "employee_details_section",
+  "company",
+  "department",
+  "column_break_p7gxs",
+  "branch",
+  "designation"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "attendance_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Attendance Date",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "attn_ot_hrs",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Attn OT Hrs",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "allow",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Allow",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "allowed_ot",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Allowed OT",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "first_in",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "First In",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "last_out",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Last Out",
+   "read_only": 1
+  },
+  {
+   "fieldname": "attendance",
+   "fieldtype": "Link",
+   "label": "Attendance",
+   "options": "Attendance",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_sogvo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_details_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Details"
+  },
+  {
+   "fetch_from": "employee.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "column_break_p7gxs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.branch",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation"
+  },
+  {
+   "default": "0",
+   "fieldname": "weekly_off",
+   "fieldtype": "Check",
+   "label": "Weekly Off",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_cancelled",
+   "fieldtype": "Check",
+   "label": "Is Cancelled",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-05-02 18:21:11.698497",
+ "modified_by": "Administrator",
+ "module": "Gurukrupa Customizations",
+ "name": "OT Log",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
