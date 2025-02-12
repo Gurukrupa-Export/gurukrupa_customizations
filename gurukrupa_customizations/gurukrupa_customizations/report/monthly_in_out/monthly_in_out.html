@@ -1,0 +1,52 @@
+<h2 class="text-left">{%= __("Monthly IN / Out Report from") %}
+    {%= frappe.datetime.str_to_user(filters.from_date) %}
+	{%= __("to") %}
+	{%= frappe.datetime.str_to_user(filters.to_date) %}
+</h2>
+<hr>
+<div id="emp_details">
+    <div class="col">
+        <div><b>Employee Name</b> : {{ filters.emp_name }}</div>
+        <div><b>Department</b> : {{ filters.emp_department }}</div>
+    </div>
+    <div class="col">
+        <div><b>Designation Name</b> : {{ filters.designation }}</div>
+        <div><b>Punch ID</b> : {{ filters.punch_id }}</div>
+    </div>
+    <div class="col">
+        <div><b>Employee Code</b> : {{ filters.cur_employee }}</div>
+        <div><b>Shift Hours</b> : {{ filters.shift_hrs }}</div>
+    </div>
+</div>
+<hr>
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			{% for col in columns %}
+			<th>
+				{{ col.label }}
+			</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for row in data %}
+		<tr>
+			{% for col in columns %}
+			<td>
+				{{ frappe.format(row[col.fieldname], col, row) }}
+				<!-- {{ frappe.format(row[col.fieldname], col, row) }} -->
+			</td>
+			{% endfor %}
+		</td>
+		{% endfor %}
+	</tbody>
+</table>
+<style>
+    #emp_details {
+        display: flex;
+    }
+    .col {
+        width: -webkit-fill-available;
+    }
+</style>

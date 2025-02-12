@@ -1,0 +1,131 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-03-02 12:39:53.164700",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "filters_section",
+  "from_date",
+  "company",
+  "department",
+  "designation",
+  "punch_id",
+  "column_break_bnm65",
+  "to_date",
+  "employee",
+  "employee_name",
+  "search",
+  "allow",
+  "section_break_hi6cd",
+  "ot_details"
+ ],
+ "fields": [
+  {
+   "fieldname": "column_break_bnm65",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "punch_id",
+   "fieldtype": "Data",
+   "label": "Punch ID"
+  },
+  {
+   "fieldname": "filters_section",
+   "fieldtype": "Section Break",
+   "label": "Filters"
+  },
+  {
+   "fieldname": "section_break_hi6cd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "ot_details",
+   "fieldtype": "Table",
+   "label": "OT Details",
+   "options": "OT Details"
+  },
+  {
+   "fieldname": "search",
+   "fieldtype": "Button",
+   "label": "Search",
+   "options": "get_ot_details"
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "From Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "To Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "allow",
+   "fieldtype": "Check",
+   "label": "Allow"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-01-17 10:40:23.880962",
+ "modified_by": "Administrator",
+ "module": "Gurukrupa Customizations",
+ "name": "OT Allowance",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,788 @@
+{
+ "Employee": [
+  {
+   "dt": "Employee",
+   "fieldname": "custom_column_break_p6akj",
+   "fieldtype": "Column Break",
+   "insert_after": "salary_mode",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "variable_end_date",
+   "fieldtype": "Date",
+   "insert_after": "variable_in",
+   "is_system_generated": 1,
+   "label": "Variable End Date",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "variable_start_date",
+   "fieldtype": "Date",
+   "insert_after": "variable_in",
+   "is_system_generated": 1,
+   "label": "Variable Start Date",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "variable_in",
+   "fieldtype": "Percent",
+   "insert_after": "custom_provident_fund_account",
+   "is_system_generated": 1,
+   "label": "Variable In %",
+   "module": "Gurukrupa Customizations",
+   "options": "Batch"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "product_incentive_applicable",
+   "fieldtype": "Check",
+   "insert_after": "allowed_personal_hours",
+   "label": "Product Incentive Applicable",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "default": "03:00:00",
+   "dt": "Employee",
+   "fieldname": "allowed_personal_hours",
+   "fieldtype": "Time",
+   "insert_after": "attendance_device_id",
+   "label": "Allowed Personal Hours",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "additional_info",
+   "fieldtype": "Tab Break",
+   "insert_after": "employee_relative_relation",
+   "label": "Additional Info",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "religon",
+   "fieldtype": "Data",
+   "insert_after": "additional_info",
+   "label": "Religon",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "employee_cast",
+   "fieldtype": "Data",
+   "insert_after": "column_break_t3xn9",
+   "label": "Cast",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "reference_type",
+   "fieldtype": "Data",
+   "insert_after": "reference",
+   "label": "Reference Type",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fetch_from": "reference_employee_code.cell_number",
+   "fieldname": "reference_contact",
+   "fieldtype": "Data",
+   "insert_after": "column_break_9oy5o",
+   "label": "Reference Contact",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fetch_from": "reference_employee_code.current_address",
+   "fieldname": "reference_address",
+   "fieldtype": "Data",
+   "insert_after": "reference_contact",
+   "label": "Reference Address",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "name_as_per_aadhar",
+   "fieldtype": "Data",
+   "insert_after": "column_break_xmosj",
+   "label": "Name as per Aadhar",
+   "module": "Gurukrupa Customizations",
+   "reqd": 1
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "name_as_pe_pan",
+   "fieldtype": "Data",
+   "insert_after": "pan_number",
+   "label": "Name as pe PAN",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "driving_licence_no",
+   "fieldtype": "Data",
+   "insert_after": "driving_licence_details",
+   "label": "Driving licence No",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "name_as_per_driving_license",
+   "fieldtype": "Data",
+   "insert_after": "driving_licence_no",
+   "label": "Name as per driving license",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "depends_on": "eval:doc.is_pf_applicable == 1",
+   "dt": "Employee",
+   "fieldname": "pf_joining_date",
+   "fieldtype": "Date",
+   "insert_after": "is_pf_applicable",
+   "label": "PF Joining Date",
+   "mandatory_depends_on": "eval:doc.is_pf_applicable == 1",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "driving_license_valid_upto_date",
+   "fieldtype": "Date",
+   "insert_after": "column_break_rpqzb",
+   "label": "Driving license Valid Upto Date",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "reference",
+   "fieldtype": "Section Break",
+   "insert_after": "employee_cast",
+   "label": "Reference",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "column_break_9oy5o",
+   "fieldtype": "Column Break",
+   "insert_after": "reference_employee_name",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "column_break_t3xn9",
+   "fieldtype": "Column Break",
+   "insert_after": "religon",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "aadhar_details",
+   "fieldtype": "Section Break",
+   "insert_after": "reference_address",
+   "label": "Aadhar details",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "driving_licence_details",
+   "fieldtype": "Section Break",
+   "insert_after": "name_as_per_aadhar",
+   "label": "Driving licence Details",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "column_break_xmosj",
+   "fieldtype": "Column Break",
+   "insert_after": "aadhar_number",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "column_break_rpqzb",
+   "fieldtype": "Column Break",
+   "insert_after": "name_as_per_driving_license",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "default": "0",
+   "dt": "Employee",
+   "fieldname": "is_physical_handicap",
+   "fieldtype": "Check",
+   "insert_after": "uan_number",
+   "label": "Is Physical Handicap",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "depends_on": "eval:doc.salary_mode == 'Bank'",
+   "dt": "Employee",
+   "fieldname": "employee_name_as_per_bank_account",
+   "fieldtype": "Data",
+   "insert_after": "bank_details_section",
+   "label": "Employee Name as per Bank Account",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "section_break_gqpqp",
+   "fieldtype": "Section Break",
+   "insert_after": "driving_license_valid_upto_date",
+   "label": "Employee Family Background",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "employee_family_background",
+   "fieldtype": "Table",
+   "insert_after": "section_break_gqpqp",
+   "module": "Gurukrupa Customizations",
+   "options": "Employee Family Background"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "reference_employee_code",
+   "fieldtype": "Link",
+   "insert_after": "reference_type",
+   "label": "Reference Employee Code",
+   "module": "Gurukrupa Customizations",
+   "options": "Employee"
+  },
+  {
+   "dt": "Employee",
+   "fetch_from": "reference_employee_code.employee_name",
+   "fieldname": "reference_employee_name",
+   "fieldtype": "Data",
+   "insert_after": "reference_employee_code",
+   "label": "Reference Employee Name",
+   "module": "Gurukrupa Customizations",
+   "read_only": 1
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "section_break_qwaae",
+   "fieldtype": "Section Break",
+   "insert_after": "employee_family_background",
+   "label": "Police Verification",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "employee_relative_deails",
+   "fieldtype": "Table",
+   "insert_after": "section_break_qwaae",
+   "module": "Gurukrupa Customizations",
+   "options": "Employee Relative Deails"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "relative_employee_code",
+   "fieldtype": "Link",
+   "insert_after": "employee_relative_deails",
+   "label": "Relative Employee Code",
+   "module": "Gurukrupa Customizations",
+   "options": "Employee"
+  },
+  {
+   "dt": "Employee",
+   "fetch_from": "relative_employee_code.employee_name",
+   "fieldname": "relative_employee_name",
+   "fieldtype": "Data",
+   "insert_after": "relative_employee_code",
+   "label": "Relative Employee Name",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "employee_relative_relation",
+   "fieldtype": "Link",
+   "insert_after": "relative_employee_name",
+   "label": "Employee Relative Relation",
+   "module": "Gurukrupa Customizations",
+   "options": "Employee Relations"
+  },
+  {
+   "dt": "Employee",
+   "fetch_from": "reports_to.employee_name",
+   "fieldname": "reporting_employee_name_",
+   "fieldtype": "Data",
+   "insert_after": "reports_to",
+   "label": "Reporting Employee Name ",
+   "module": "Gurukrupa Customizations",
+   "read_only": 1
+  },
+  {
+   "dt": "Employee",
+   "fetch_from": "branch.branch_name",
+   "fieldname": "branch_name",
+   "fieldtype": "Data",
+   "insert_after": "branch",
+   "label": "Branch Name",
+   "module": "Gurukrupa Customizations",
+   "read_only": 1
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "emergency_contact_details_table",
+   "fieldtype": "Table",
+   "insert_after": "emergency_contact_details",
+   "label": "Emergency Contact",
+   "module": "Gurukrupa Customizations",
+   "options": "Emergency Contact"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "section_break_ssodf",
+   "fieldtype": "Section Break",
+   "insert_after": "emergency_contact_details_table",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "manufacturer",
+   "fieldtype": "Link",
+   "insert_after": "reporting_employee_name_",
+   "label": "Manufacturer",
+   "module": "Gurukrupa Customizations",
+   "options": "Manufacturer"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "same_as_current_address",
+   "fieldtype": "Check",
+   "insert_after": "current_accommodation_type",
+   "label": "Same as Current Address",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "old_employee_code",
+   "fieldtype": "Data",
+   "insert_after": "image",
+   "label": "Old Employee Code",
+   "module": "Gurukrupa Customizations",
+   "reqd": 1
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "old_punch_id",
+   "fieldtype": "Data",
+   "insert_after": "old_employee_code",
+   "label": "Old Punch Id",
+   "module": "Gurukrupa Customizations",
+   "reqd": 1
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "aadhar_number",
+   "fieldtype": "Data",
+   "insert_after": "aadhar_details",
+   "label": "Aadhar Number",
+   "module": "Gurukrupa Customizations",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.is_physical_handicap",
+   "dt": "Employee",
+   "fieldname": "handicap_percenatge",
+   "fieldtype": "Percent",
+   "insert_after": "handicap_certificate_date",
+   "label": "Handicap Percenatge",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "depends_on": "eval:doc.is_physical_handicap",
+   "dt": "Employee",
+   "fieldname": "handicap_certificate_date",
+   "fieldtype": "Date",
+   "insert_after": "is_physical_handicap",
+   "label": "Handicap Certificate Date",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "is_pf_applicable",
+   "fieldtype": "Check",
+   "insert_after": "connections_tab",
+   "label": "Is PF Applicable",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "uan_number",
+   "fieldtype": "Data",
+   "insert_after": "salary_cb",
+   "label": "UAN Number",
+   "mandatory_depends_on": "eval:doc.is_pf_applicable == 1",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "_esic_number",
+   "fieldtype": "Data",
+   "insert_after": "custom_is_esic_applicable",
+   "label": " ESIC Number",
+   "mandatory_depends_on": "eval:doc.custom_is_esic_applicable == 1",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "depends_on": "eval: doc.employment_type == 'Apprentice'",
+   "dt": "Employee",
+   "fieldname": "apprentice_register_no",
+   "fieldtype": "Data",
+   "insert_after": "apprentice_contract_no",
+   "label": "Apprentice Register No",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "depends_on": "eval: doc.employment_type == 'Apprentice'",
+   "dt": "Employee",
+   "fieldname": "apprentice_contract_no",
+   "fieldtype": "Data",
+   "insert_after": "manufacturer",
+   "label": "Apprentice Contract No",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_notice_dayes",
+   "fieldtype": "Select",
+   "insert_after": "notice_number_of_days",
+   "label": "Notice (days)",
+   "module": "Gurukrupa Customizations",
+   "options": "0\n30\n60\n90",
+   "reqd": 1
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_health_insurance_status",
+   "fieldtype": "Select",
+   "insert_after": "health_insurance_provider",
+   "label": "Health Insurance Status",
+   "module": "Gurukrupa Customizations",
+   "options": "\nPending\nComplete",
+   "reqd": 1
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_column_break_omq32",
+   "fieldtype": "Column Break",
+   "insert_after": "custom_health_insurance_status",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_accident_insurance_provider",
+   "fieldtype": "Link",
+   "insert_after": "custom_accident_insurance",
+   "label": "Accident Insurance Provider",
+   "module": "Gurukrupa Customizations",
+   "options": "Employee Health Insurance",
+   "reqd": 1
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_accident_insurance_status",
+   "fieldtype": "Select",
+   "insert_after": "custom_accident_insurance_provider",
+   "label": "Accident Insurance Status",
+   "module": "Gurukrupa Customizations",
+   "options": "\nPending\nComplete",
+   "reqd": 1
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_column_break_svzjc",
+   "fieldtype": "Column Break",
+   "insert_after": "custom_accident_insurance_status",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "depends_on": "eval:doc.custom_accident_insurance_status == 'Complete'",
+   "dt": "Employee",
+   "fieldname": "custom_accident_insurance_no",
+   "fieldtype": "Data",
+   "insert_after": "custom_sum_assured_accident_insurance_",
+   "label": "Accident Insurance No",
+   "mandatory_depends_on": "eval:doc.custom_accident_insurance_status == 'Complete'",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_is_esic_applicable",
+   "fieldtype": "Check",
+   "insert_after": "pf_joining_date",
+   "label": "Is ESIC Applicable",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "depends_on": "eval:doc.employment_type=='Probation'",
+   "dt": "Employee",
+   "fieldname": "custom_probation_period_days",
+   "fieldtype": "Select",
+   "insert_after": "employment_type",
+   "label": "Probation Period (Days)",
+   "module": "Gurukrupa Customizations",
+   "options": "\n0\n30\n60\n90"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_sum_assured_",
+   "fieldtype": "Select",
+   "insert_after": "custom_column_break_omq32",
+   "label": "Sum Assured",
+   "module": "Gurukrupa Customizations",
+   "options": "\n1 Lakh\n2 Lakh\n3 Lakh\n4 Lakh\n5 Lakh\n10 Lakh",
+   "reqd": 1
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_sum_assured_accident_insurance_",
+   "fieldtype": "Select",
+   "insert_after": "custom_column_break_svzjc",
+   "label": "Sum Assured Accident Insurance ",
+   "module": "Gurukrupa Customizations",
+   "options": "\n10 Lakh",
+   "reqd": 1
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_operation",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "insert_after": "department",
+   "label": "Operation",
+   "module": "Gurukrupa Customizations",
+   "options": "Department Operation"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "employment_type",
+   "fieldtype": "Link",
+   "insert_after": "department",
+   "is_system_generated": 1,
+   "label": "Employment Type",
+   "module": "Gurukrupa Customizations",
+   "options": "Employment Type"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "job_applicant",
+   "fieldtype": "Link",
+   "insert_after": "employment_details",
+   "is_system_generated": 1,
+   "label": "Job Applicant",
+   "module": "Gurukrupa Customizations",
+   "options": "Job Applicant"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "grade",
+   "fieldtype": "Link",
+   "insert_after": "branch",
+   "is_system_generated": 1,
+   "label": "Grade",
+   "module": "Gurukrupa Customizations",
+   "options": "Employee Grade"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "default_shift",
+   "fieldtype": "Link",
+   "insert_after": "holiday_list",
+   "is_system_generated": 1,
+   "label": "Default Shift",
+   "module": "Gurukrupa Customizations",
+   "options": "Shift Type"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "health_insurance_section",
+   "fieldtype": "Section Break",
+   "insert_after": "health_details",
+   "is_system_generated": 1,
+   "label": "Health Insurance",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "health_insurance_provider",
+   "fieldtype": "Link",
+   "insert_after": "health_insurance_section",
+   "is_system_generated": 1,
+   "label": "Health Insurance Provider",
+   "module": "Gurukrupa Customizations",
+   "options": "Employee Health Insurance"
+  },
+  {
+   "depends_on": "eval:doc.health_insurance_provider",
+   "dt": "Employee",
+   "fieldname": "health_insurance_no",
+   "fieldtype": "Data",
+   "insert_after": "health_insurance_provider",
+   "is_system_generated": 1,
+   "label": "Health Insurance No",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "approvers_section",
+   "fieldtype": "Section Break",
+   "insert_after": "default_shift",
+   "is_system_generated": 1,
+   "label": "Approvers",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "expense_approver",
+   "fieldtype": "Link",
+   "insert_after": "approvers_section",
+   "is_system_generated": 1,
+   "label": "Expense Approver",
+   "module": "Gurukrupa Customizations",
+   "options": "User"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "leave_approver",
+   "fieldtype": "Link",
+   "insert_after": "expense_approver",
+   "is_system_generated": 1,
+   "label": "Leave Approver",
+   "module": "Gurukrupa Customizations",
+   "options": "User"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "column_break_45",
+   "fieldtype": "Column Break",
+   "insert_after": "leave_approver",
+   "is_system_generated": 1,
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "shift_request_approver",
+   "fieldtype": "Link",
+   "insert_after": "column_break_45",
+   "is_system_generated": 1,
+   "label": "Shift Request Approver",
+   "module": "Gurukrupa Customizations",
+   "options": "User"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "salary_cb",
+   "fieldtype": "Column Break",
+   "insert_after": "salary_mode",
+   "is_system_generated": 1,
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fetch_from": "department.payroll_cost_center",
+   "fetch_if_empty": 1,
+   "fieldname": "payroll_cost_center",
+   "fieldtype": "Link",
+   "insert_after": "salary_cb",
+   "is_system_generated": 1,
+   "label": "Payroll Cost Center",
+   "module": "Gurukrupa Customizations",
+   "options": "Cost Center"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "bank_cb",
+   "fieldtype": "Column Break",
+   "insert_after": "bank_ac_no",
+   "is_system_generated": 1,
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "depends_on": "eval:doc.salary_mode == \"Bank\"",
+   "dt": "Employee",
+   "fieldname": "ifsc_code",
+   "fieldtype": "Data",
+   "insert_after": "bank_cb",
+   "is_system_generated": 1,
+   "label": "IFSC Code",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "pan_number",
+   "fieldtype": "Data",
+   "insert_after": "payroll_cost_center",
+   "is_system_generated": 1,
+   "label": "PAN Number",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "depends_on": "eval:doc.salary_mode == \"Bank\"",
+   "dt": "Employee",
+   "fieldname": "micr_code",
+   "fieldtype": "Data",
+   "insert_after": "ifsc_code",
+   "is_system_generated": 1,
+   "label": "MICR Code",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "provident_fund_account",
+   "fieldtype": "Data",
+   "insert_after": "pan_number",
+   "is_system_generated": 1,
+   "label": "Provident Fund Account",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_accident_insurance",
+   "fieldtype": "Section Break",
+   "insert_after": "health_insurance_no",
+   "label": "Accident Insurance",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_languages",
+   "fieldtype": "Section Break",
+   "insert_after": "place_of_issue",
+   "is_system_generated": 1,
+   "label": "Languages",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_employee_languages",
+   "fieldtype": "Table",
+   "insert_after": "custom_languages",
+   "is_system_generated": 1,
+   "label": "Employee Languages",
+   "module": "Gurukrupa Customizations",
+   "options": "Employee Languages"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_hobbies",
+   "fieldtype": "Section Break",
+   "insert_after": "custom_employee_languages",
+   "is_system_generated": 1,
+   "label": "Hobbies",
+   "module": "Gurukrupa Customizations"
+  },
+  {
+   "dt": "Employee",
+   "fieldname": "custom_employees_hobbies",
+   "fieldtype": "Table",
+   "insert_after": "custom_hobbies",
+   "is_system_generated": 1,
+   "label": "Employees Hobbies",
+   "module": "Gurukrupa Customizations",
+   "options": "Employees Hobbies"
+  }
+ ]
+
+}

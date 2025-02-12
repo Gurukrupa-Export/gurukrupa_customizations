@@ -1,0 +1,89 @@
+{
+ "actions": [],
+ "autoname": "field:state",
+ "creation": "2023-07-01 12:59:43.113034",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "state",
+  "iso",
+  "capital",
+  "column_break_9p19f",
+  "zone",
+  "official_languages",
+  "vehicle_code"
+ ],
+ "fields": [
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "State",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "iso",
+   "fieldtype": "Data",
+   "label": "ISO"
+  },
+  {
+   "fieldname": "capital",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Capital"
+  },
+  {
+   "fieldname": "column_break_9p19f",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "zone",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Zone"
+  },
+  {
+   "fieldname": "official_languages",
+   "fieldtype": "Data",
+   "label": "Official languages"
+  },
+  {
+   "fieldname": "vehicle_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Vehicle code"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-07-06 16:13:54.724061",
+ "modified_by": "Administrator",
+ "module": "Gurukrupa Customizations",
+ "name": "State List",
+ "name_case": "Title Case",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

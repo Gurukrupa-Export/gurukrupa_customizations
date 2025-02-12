@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include gurukrupa_customizations *.css
+recursive-include gurukrupa_customizations *.csv
+recursive-include gurukrupa_customizations *.html
+recursive-include gurukrupa_customizations *.ico
+recursive-include gurukrupa_customizations *.js
+recursive-include gurukrupa_customizations *.json
+recursive-include gurukrupa_customizations *.md
+recursive-include gurukrupa_customizations *.png
+recursive-include gurukrupa_customizations *.py
+recursive-include gurukrupa_customizations *.svg
+recursive-include gurukrupa_customizations *.txt
+recursive-exclude gurukrupa_customizations *.pyc

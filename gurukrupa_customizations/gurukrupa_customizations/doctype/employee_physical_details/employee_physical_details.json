@@ -1,0 +1,60 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-06-16 11:58:08.789105",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "height",
+  "weight",
+  "is_physical_handicap",
+  "handicap_certificate_date",
+  "handicap_percenatge"
+ ],
+ "fields": [
+  {
+   "fieldname": "height",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Height"
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Weight"
+  },
+  {
+   "fieldname": "is_physical_handicap",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Is Physical Handicap?",
+   "options": "NO\nYES"
+  },
+  {
+   "depends_on": "eval: doc.is_physical_handicap == 'YES'",
+   "fieldname": "handicap_certificate_date",
+   "fieldtype": "Date",
+   "label": "Handicap Certificate Date"
+  },
+  {
+   "depends_on": "eval: doc.is_physical_handicap == 'YES'",
+   "fieldname": "handicap_percenatge",
+   "fieldtype": "Percent",
+   "label": "Handicap Percenatge"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-07-06 16:13:53.253637",
+ "modified_by": "Administrator",
+ "module": "Gurukrupa Customizations",
+ "name": "Employee Physical Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

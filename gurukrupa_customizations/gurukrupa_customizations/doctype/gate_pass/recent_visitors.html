@@ -1,0 +1,140 @@
+<div class="box">
+    <div class="grid-body rows text-center">
+        <!-- <h6 class="text-center uppercase" style="color: #8D99A6">{{ _("Recent Visits") }}</h6> -->
+        <div class="visitors" style="overflow-x: auto;">
+            <table class="table table-bordered table-hover">
+                <thead style="background:rgba(190, 190, 190, 0.582)">
+                    <tr>
+                        <th class="text-left">{{ _("Print") }}</th>
+                        <th class="text-left">{{ _("Out Time") }}</th>
+                        <th class="text-left">{{ _("In Time") }}</th>
+                        <th class="text-left">{{ _("GatePass") }}</th>
+                        <th class="text-left">{{ _("Visitor Name") }}</th>
+                        <th class="text-left">{{ _("Mobile No") }}</th>
+                        <th class="text-left">{{ _("Person to Meet") }}</th>
+                        <th class="text-left">{{ _("Department") }}</th>
+                        <th class="text-left">{{ _("Designation") }}</th>
+                        <th class="text-left">{{ _("Reason To Visit") }}</th>
+                        <th class="text-left">{{ _("Remarks") }}</th>
+                        <th class="text-left">{{ _("Visitor's Company") }}</th>
+                        <th class="text-left">{{ _("Contact No") }}</th>
+                        <th class="text-left">{{ _("Address") }}</th>
+                        <th class="text-left">{{ _("GatePass Type") }}</th>
+                        <th class="text-left">{{ _("Do Not Print") }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in data %}
+                    <tr>
+                        {% set in_button =
+                        '<button type="button" class="btn btn-primary" value="%s" id="in-button">In
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z" />
+                                <path fill-rule="evenodd"
+                                    d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
+                            </svg>
+                        </button>'%(d.name)
+                        %}
+                        {% set out_button =
+                        '<button type="button" class="btn btn-primary" value="%s" id="out-button">Out
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
+                                <path fill-rule="evenodd"
+                                    d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+                            </svg>
+                        </button>'%(d.name)
+                        %}
+                        <td class="text-left"><button class="btn btn-secondary" value="{{ d.name }}" id="print" {{ 'disabled' if d.do_not_print else '' }}>Print<i class="fa fa-print"></i></button></td>
+                        <td class="text-left">{{ d.out_time if d.out_time else out_button }}</td>
+                        <td class="text-left">{{ d.in_time if d.in_time else in_button }}</td>
+                        <td class="text-left" id="name">{{ d.name }}</td>
+                        <td class="text-left">{{ d.visitor_name }}</td>
+                        <td class="text-left">{{ d.mobile_no }}</td>
+                        <td class="text-left">{{ d.person_to_meet }}</td>
+                        <td class="text-left">{{ d.department }}</td>
+                        <td class="text-left">{{ d.designation }}</td>
+                        <td class="text-left">{{ d.reason_for_visit }}</td>
+                        <td class="text-left">{{ d.remark }}</td>
+                        <td class="text-left">{{ d.company_name }}</td>
+                        <td class="text-left">{{ d.com_contact_no }}</td>
+                        <td class="text-left">{{ d.company_address }}</td>
+                        <td class="text-left">{{ d.gatepass_type }}</td>
+                        <td class="text-left"><input type="checkbox" {{ 'checked' if d.do_not_print else '' }}></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <!-- Section end -->
+        </div>
+    </div>
+</div>
+<script>
+    $("#out-button").click(function () {
+        var me = this
+        var dialog = new frappe.ui.Dialog({
+            title: __('Update Gate Pass'),
+            fields: [{
+                fieldname: 'out_time',
+                label: __('Out Time'),
+                fieldtype: 'Time',
+            },
+            ],
+        });
+        dialog.show();
+        dialog.get_field('out_time').set_input(frappe.datetime.now_time());
+
+        dialog.set_primary_action(__('Submit'), function () {
+            frappe.call({
+                method: "gurukrupa_customizations.gurukrupa_customizations.doctype.gate_pass.gate_pass.update_gatepass",
+                args: {
+                    docname: me.value,
+                    type: "In", //gatepass type
+                    time: dialog.get_value("out_time")
+                },
+                callback(r) {
+                    cur_frm.reload_doc()
+                    dialog.hide()
+                }
+            })
+        });
+
+    })
+    $("#in-button").click(function () {
+        var me = this
+        var dialog = new frappe.ui.Dialog({
+            title: __('Update Gate Pass'),
+            fields: [{
+                fieldname: 'in_time',
+                label: __('In Time'),
+                fieldtype: 'Time',
+            },
+            ],
+        });
+        dialog.show();
+        dialog.get_field('in_time').set_input(frappe.datetime.now_time());
+
+        dialog.set_primary_action(__('Submit'), function () {
+            frappe.call({
+                method: "gurukrupa_customizations.gurukrupa_customizations.doctype.gate_pass.gate_pass.update_gatepass",
+                args: {
+                    docname: me.value,
+                    type: "Out", //gatepass type
+                    time: dialog.get_value("in_time")
+                },
+                callback(r) {
+                    cur_frm.reload_doc()
+                    dialog.hide()
+                }
+            })
+        });
+    })
+    $("#print").click(function() {
+        var me = this
+        var print_url = `/printview?doctype=Gate%20Pass&name=${me.value}&trigger_print=1&format=Visitor%20Gate%20pass&no_letterhead=0&letterhead=Gurukrupa%20Exports&settings=%7B%7D&_lang=en-GB`
+        window.open(print_url, '_blank')
+    })
+</script>
