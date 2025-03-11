@@ -18,9 +18,9 @@ after_migrate = "gurukrupa_customizations.migrate.after_migrate"
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 
 doc_events = {
-	"Payment Entry": {
-		"validate": "gurukrupa_customizations.overrides.payment_entry.validate"
-	},
+	# "Payment Entry": {
+	# 	"validate": "gurukrupa_customizations.overrides.payment_entry.validate"
+	# },
     
     # "Shift Type": {
     #     "before_save": "gurukrupa_customizations.overrides.shift_type.before_save"
