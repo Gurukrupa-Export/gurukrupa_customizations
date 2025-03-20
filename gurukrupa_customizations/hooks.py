@@ -18,9 +18,9 @@ after_migrate = "gurukrupa_customizations.migrate.after_migrate"
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 
 doc_events = {
-	# "Payment Entry": {
-	# 	"validate": "gurukrupa_customizations.overrides.payment_entry.validate"
-	# },
+	"Payment Entry": {
+		"validate": "gurukrupa_customizations.overrides.payment_entry.validate"
+	},
     
     # "Shift Type": {
     #     "before_save": "gurukrupa_customizations.overrides.shift_type.before_save"
@@ -56,7 +56,7 @@ fixtures = [
 ]
 
 override_doctype_class = {
-    "Payment Entry": "gurukrupa_customizations.overrides.payment_entry.CustomPaymentEntry",
+    # "Payment Entry": "gurukrupa_customizations.overrides.payment_entry.CustomPaymentEntry",
 	"Salary Slip": "gurukrupa_customizations.overrides.salary_slip.CustomSalarySlip"
     }
 
