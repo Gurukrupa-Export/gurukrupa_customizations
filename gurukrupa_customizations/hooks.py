@@ -12,7 +12,7 @@ doctype_js = {
     "Stock Reconciliation": "public/js/custom_stock_reconciliation.js"
 }
 
-after_migrate = "gurukrupa_customizations.migrate.after_migrate"
+# after_migrate = "gurukrupa_customizations.migrate.after_migrate"
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
