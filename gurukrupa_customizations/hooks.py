@@ -38,7 +38,7 @@ scheduler_events = {
 		"0 23 * * *": [
 			"gurukrupa_customizations.gurukrupa_customizations.doctype.personal_out_gate_pass.personal_out_gate_pass.create_prsnl_out_logs",
 		],
-		"0 6 * * *": [
+		"25 7 * * *": [
             "gurukrupa_customizations.overrides.shift_type.set_date_value"
 		]
 	},
