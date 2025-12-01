@@ -729,9 +729,17 @@ def process_data(data, filters):
 		# 	frappe.throw(f"Error in attendance for date {row.attendance_date} {row.status}. Please contact HR.")
 		if row.lh:
 			row.status = 'LH'
-		shift_hours_in_sec = row.shift_hours*3600
-		if row.net_wrk_hrs.total_seconds() > shift_hours_in_sec or (shift_hours_in_sec - row.net_wrk_hrs.total_seconds()) < 60:
-			row.net_wrk_hrs = timedelta(hours=row.shift_hours)
+		shift_hours_in_sec = ''
+		if row.shift_hours:
+			shift_hours_in_sec = row.shift_hours * 3600
+			if row.net_wrk_hrs.total_seconds() > shift_hours_in_sec or (shift_hours_in_sec - row.net_wrk_hrs.total_seconds()) < 60:
+				row.net_wrk_hrs = timedelta(hours=row.shift_hours)
+		else:
+			leave_status = frappe.db.get_value('Leave Type',{'name': row.leave_type,'is_earned_leave': 1}, ['name'])
+			if leave_status:
+				row.status = leave_status
+				row.net_wrk_hrs = timedelta(0)
+				
 		row["total_pay_hrs"] = row.net_wrk_hrs + (row.get("ot_hours") or timedelta(0))
 		row.status = STATUS.get(row.status) or row.status
 		processed[row.attendance_date] = row
