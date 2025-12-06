@@ -1,287 +1,339 @@
 {
-"actions": [],
-"allow_events_in_timeline": 1,
-"allow_import": 1,
-"creation": "2022-12-01 21:09:19.411417",
-"doctype": "DocType",
-"editable_grid": 1,
-"engine": "InnoDB",
-"field_order": [
-    "gatepass_type",
-    "do_not_print",
-    "visit_date",
-    "in_time",
-    "out_time",
-    "branch",
-    "column_break_2",
-    "mobile_no",
-    "emp_company",
-    "company_name",
-    "company_address",
-    "column_break_4",
-    "visitor_name",
-    "employee",
-    "emp_designation",
-    "emp_department",
-    "com_contact_no",
-    "reference_name",
-    "column_break_9",
-    "person_to_meet",
-    "department",
-    "designation",
-    "column_break_16",
-    "reason_for_visit",
-    "remark",
-    "section_break_17",
-    "visitor_photo",
-    "photo_preview",
-    "gate_pass_approversection",
-    "reports_to",
-    "gate_pass_approver",
-    "recent_visits_section",
-    "visits"
-],
-"fields": [
-    {
-    "bold": 1,
-    "fieldname": "gatepass_type",
-    "fieldtype": "Select",
-    "in_list_view": 1,
-    "in_standard_filter": 1,
-    "label": "Gatepass Type",
-    "options": "In-Visitor\nInter-Movement\nFor Interview\nOut-Personal Work\nOut-Office Work",
-    "set_only_once": 1
-    },
-    {
-    "depends_on": "eval:in_list(['In-Visitor','For Interview'], doc.gatepass_type)",
-    "fieldname": "company_name",
-    "fieldtype": "Data",
-    "label": "Company Name"
-    },
-    {
-    "bold": 1,
-    "default": "Today",
-    "fieldname": "visit_date",
-    "fieldtype": "Date",
-    "in_list_view": 1,
-    "in_standard_filter": 1,
-    "label": "Visit Date",
-    "reqd": 1
-    },
-    {
-    "fieldname": "column_break_2",
-    "fieldtype": "Column Break"
-    },
-    {
-    "fieldname": "mobile_no",
-    "fieldtype": "Link",
-    "label": "Mobile No",
-    "options": "Gate Pass Contact"
-    },
-    {
-    "depends_on": "eval:in_list(['In-Visitor','For Interview'], doc.gatepass_type)",
-    "fieldname": "company_address",
-    "fieldtype": "Data",
-    "label": "Company Address"
-    },
-    {
-    "bold": 1,
-    "default": "now",
-    "fieldname": "in_time",
-    "fieldtype": "Time",
-    "label": "In Time",
-    "read_only": 1
-    },
-    {
-    "fieldname": "column_break_4",
-    "fieldtype": "Column Break"
-    },
-    {
-    "fieldname": "visitor_name",
-    "fieldtype": "Data",
-    "in_list_view": 1,
-    "in_standard_filter": 1,
-    "label": "Visitor Name",
-    "mandatory_depends_on": "eval:doc.gatepass_type=='In-Visitor'",
-    "read_only_depends_on": "eval:in_list(['Out-Personal Work','Out-Office Work'],doc.gatepass_type)"
-    },
-    {
-    "depends_on": "eval:in_list(['In-Visitor','For Interview'], doc.gatepass_type)",
-    "fieldname": "com_contact_no",
-    "fieldtype": "Data",
-    "label": "Company Contact No.",
-    "options": "Phone"
-    },
-    {
-    "depends_on": "eval:in_list(['In-Visitor','For Interview'], doc.gatepass_type)",
-    "fieldname": "reference_name",
-    "fieldtype": "Data",
-    "label": "Reference Name"
-    },
-    {
-    "fieldname": "column_break_9",
-    "fieldtype": "Section Break"
-    },
-    {
-    "depends_on": "eval:in_list(['In-Visitor','For Interview'], doc.gatepass_type)",
-    "fieldname": "person_to_meet",
-    "fieldtype": "Link",
-    "in_list_view": 1,
-    "in_standard_filter": 1,
-    "label": "Person To Meet",
-    "options": "Employee"
-    },
-    {
-    "depends_on": "eval:in_list(['Inter-Movement','In-Visitor','For Interview'],doc.gatepass_type)",
-    "fetch_from": "person_to_meet.department",
-    "fieldname": "department",
-    "fieldtype": "Link",
-    "label": "Department",
-    "options": "Department"
-    },
-    {
-    "depends_on": "eval:in_list(['In-Visitor','For Interview'], doc.gatepass_type)",
-    "fetch_from": "person_to_meet.designation",
-    "fieldname": "designation",
-    "fieldtype": "Link",
-    "label": "Designation ",
-    "options": "Designation"
-    },
-    {
-    "fieldname": "column_break_16",
-    "fieldtype": "Column Break"
-    },
-    {
-    "fieldname": "reason_for_visit",
-    "fieldtype": "Small Text",
-    "label": "Reason for Visit"
-    },
-    {
-    "fieldname": "remark",
-    "fieldtype": "Data",
-    "label": "Remark"
-    },
-    {
-    "fieldname": "section_break_17",
-    "fieldtype": "Column Break"
-    },
-    {
-    "fieldname": "visitor_photo",
-    "fieldtype": "Attach Image",
-    "label": "Visitor Photo"
-    },
-    {
-    "fieldname": "photo_preview",
-    "fieldtype": "Image",
-    "label": "Photo Preview",
-    "options": "visitor_photo"
-    },
-    {
-    "depends_on": "eval:in_list(['Out-Personal Work','Out-Office Work','Inter-Movement'],doc.gatepass_type)",
-    "fieldname": "recent_visits_section",
-    "fieldtype": "Section Break",
-    "label": "Recent Visits"
-    },
-    {
-    "fieldname": "visits",
-    "fieldtype": "HTML"
-    },
-    {
-    "fieldname": "out_time",
-    "fieldtype": "Time",
-    "label": "Out Time",
-    "read_only": 1
-    },
-    {
-    "depends_on": "eval:in_list(['Out-Personal Work','Out-Office Work','Inter-Movement'],doc.gatepass_type)",
-    "fieldname": "employee",
-    "fieldtype": "Link",
-    "label": "Employee",
-    "options": "Employee"
-    },
-    {
-    "depends_on": "eval:doc.employee",
-    "fetch_from": "employee.designation",
-    "fieldname": "emp_designation",
-    "fieldtype": "Link",
-    "label": "Employee Designation",
-    "options": "Designation"
-    },
-    {
-    "depends_on": "eval:doc.employee",
-    "fetch_from": "employee.department",
-    "fieldname": "emp_department",
-    "fieldtype": "Link",
-    "label": "Employee Department",
-    "options": "Department"
-    },
-    {
-    "depends_on": "eval:doc.employee",
-    "fetch_from": "employee.company",
-    "fieldname": "emp_company",
-    "fieldtype": "Link",
-    "label": "Company",
-    "options": "Company"
-    },
-    {
-    "default": "0",
-    "fieldname": "do_not_print",
-    "fieldtype": "Check",
-    "label": "Do Not Print"
-    },
-    {
-    "fieldname": "gate_pass_approversection",
-    "fieldtype": "Section Break",
-    "label": "Gate Pass Approver"
-    },
-    {
-    "depends_on": "eval:doc.gatepass_type=='Out-Personal Work'",
-    "fetch_from": "employee.reporting_employee_name_",
-    "fieldname": "reports_to",
-    "fieldtype": "Data",
-    "label": "Reports To"
-    },
-    {
-    "depends_on": "eval:in_list(['Out-Personal Work','Out-Office Work','Inter-Movement'],doc.gatepass_type)",
-    "fieldname": "gate_pass_approver",
-    "fieldtype": "Table",
-    "label": "Gate Pass Approver",
-    "options": "Gate Pass Approver"
-    },
-    {
-    "fieldname": "branch",
-    "fieldtype": "Link",
-    "label": "Branch",
-    "options": "Branch"
-    }
-],
-"index_web_pages_for_search": 1,
-"links": [],
-"modified": "2025-03-25 14:42:56.339105",
-"modified_by": "Administrator",
-"module": "Gurukrupa Customizations",
-"name": "Gate Pass",
-"owner": "Administrator",
-"permissions": [
-    {
-    "create": 1,
-    "delete": 1,
-    "email": 1,
-    "export": 1,
-    "print": 1,
-    "read": 1,
-    "report": 1,
-    "role": "System Manager",
-    "share": 1,
-    "write": 1
-    }
-],
-"show_title_field_in_link": 1,
-"sort_field": "modified",
-"sort_order": "DESC",
-"states": [],
-"title_field": "visitor_name",
-"track_changes": 1,
-"track_seen": 1,
-"track_views": 1
+ "actions": [],
+ "allow_events_in_timeline": 1,
+ "allow_import": 1,
+ "creation": "2022-12-01 21:09:19.411417",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "gatepass_type",
+  "do_not_print",
+  "visit_date",
+  "in_time",
+  "out_time",
+  "inter_in_time",
+  "inter_out_time",
+  "column_break_2",
+  "mobile_no",
+  "employee",
+  "emp_company",
+  "company_name",
+  "branch",
+  "company_address",
+  "com_contact_no",
+  "reference_name",
+  "column_break_4",
+  "visitor_name",
+  "contact_no",
+  "emp_department",
+  "emp_designation",
+  "manufacturer",
+  "column_break_9",
+  "person_to_meet",
+  "department",
+  "designation",
+  "column_break_16",
+  "floor",
+  "reason_for_visit",
+  "remark",
+  "section_break_17",
+  "visitor_photo",
+  "photo_preview",
+  "gate_pass_approversection",
+  "reports_to",
+  "is_gate_pass_approver",
+  "gate_pass_approver",
+  "recent_visits_section",
+  "visits"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "fieldname": "gatepass_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Gatepass Type",
+   "options": "In-Visitor\nInter-Movement\nFor Interview\nOut-Personal Work\nOut-Office Work",
+   "set_only_once": 1
+  },
+  {
+   "depends_on": "eval: doc.gatepass_type == 'In-Visitor'",
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "label": "Company Name"
+  },
+  {
+   "bold": 1,
+   "default": "Today",
+   "fieldname": "visit_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Date",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.gatepass_type == 'In-Visitor'",
+   "fieldname": "mobile_no",
+   "fieldtype": "Link",
+   "label": "Mobile No",
+   "options": "Gate Pass Contact"
+  },
+  {
+   "depends_on": "eval: doc.gatepass_type == 'In-Visitor'",
+   "fieldname": "company_address",
+   "fieldtype": "Data",
+   "label": "Company Address"
+  },
+  {
+   "bold": 1,
+   "fieldname": "in_time",
+   "fieldtype": "Time",
+   "label": "In Time",
+   "read_only": 1,
+   "read_only_depends_on": "eval: doc.gatepass_type == 'In-Visitor'"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:in_list(['Out-Personal Work','Out-Office Work','For Interview','In-Visitor'],doc.gatepass_type)",
+   "fieldname": "visitor_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Name",
+   "mandatory_depends_on": "eval:in_list(['For Interview','In-Visitor'],doc.gatepass_type)"
+  },
+  {
+   "depends_on": "eval: doc.gatepass_type == 'In-Visitor'",
+   "fieldname": "com_contact_no",
+   "fieldtype": "Data",
+   "label": "Company Contact No.",
+   "options": "Phone"
+  },
+  {
+   "depends_on": "eval:in_list(['In-Visitor','For Interview'], doc.gatepass_type)",
+   "fieldname": "reference_name",
+   "fieldtype": "Data",
+   "label": "Reference Name"
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:in_list(['In-Visitor','For Interview'], doc.gatepass_type)",
+   "fieldname": "person_to_meet",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Person To Meet",
+   "mandatory_depends_on": "eval:in_list(['In-Visitor','For Interview'], doc.gatepass_type)",
+   "options": "Employee"
+  },
+  {
+   "depends_on": "eval:in_list(['Inter-Movement','In-Visitor','For Interview'],doc.gatepass_type)",
+   "fetch_from": "person_to_meet.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Visited Department",
+   "mandatory_depends_on": "eval:in_list(['Inter-Movement'],doc.gatepass_type)",
+   "options": "Department"
+  },
+  {
+   "depends_on": "eval:in_list(['In-Visitor','For Interview'], doc.gatepass_type)",
+   "fetch_from": "person_to_meet.designation",
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation ",
+   "options": "Designation"
+  },
+  {
+   "fieldname": "column_break_16",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reason_for_visit",
+   "fieldtype": "Small Text",
+   "label": "Reason",
+   "mandatory_depends_on": "eval:in_list(['Out-Personal Work','Out-Office Work','Inter-Movement'],doc.gatepass_type)"
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Data",
+   "label": "Remark"
+  },
+  {
+   "fieldname": "section_break_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "visitor_photo",
+   "fieldtype": "Attach Image",
+   "label": "Image",
+   "mandatory_depends_on": "eval:in_list(['For Interview','In-Visitor'],doc.gatepass_type)"
+  },
+  {
+   "fieldname": "photo_preview",
+   "fieldtype": "Image",
+   "label": "Photo Preview",
+   "options": "visitor_photo"
+  },
+  {
+   "depends_on": "eval:in_list(['Out-Personal Work','Out-Office Work','Inter-Movement'],doc.gatepass_type)",
+   "fieldname": "recent_visits_section",
+   "fieldtype": "Section Break",
+   "label": "Recent Visits"
+  },
+  {
+   "fieldname": "visits",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "out_time",
+   "fieldtype": "Time",
+   "label": "Out Time",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:in_list(['Out-Personal Work','Out-Office Work','Inter-Movement'],doc.gatepass_type)",
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "mandatory_depends_on": "eval:in_list(['Out-Personal Work','Out-Office Work','Inter-Movement'],doc.gatepass_type)",
+   "options": "Employee"
+  },
+  {
+   "depends_on": "eval:doc.employee",
+   "fetch_from": "employee.designation",
+   "fieldname": "emp_designation",
+   "fieldtype": "Link",
+   "label": "Employee Designation",
+   "options": "Designation"
+  },
+  {
+   "depends_on": "eval:doc.employee",
+   "fetch_from": "employee.department",
+   "fieldname": "emp_department",
+   "fieldtype": "Link",
+   "label": "Employee Department",
+   "options": "Department"
+  },
+  {
+   "depends_on": "eval:doc.employee",
+   "fetch_from": "employee.company",
+   "fieldname": "emp_company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "default": "0",
+   "fieldname": "do_not_print",
+   "fieldtype": "Check",
+   "label": "Do Not Print"
+  },
+  {
+   "fieldname": "gate_pass_approversection",
+   "fieldtype": "Section Break",
+   "label": "Gate Pass Approver"
+  },
+  {
+   "depends_on": "eval:in_list(['Out-Personal Work','Out-Office Work','Inter-Movement'],doc.gatepass_type)",
+   "fetch_from": "employee.reporting_employee_name_",
+   "fieldname": "reports_to",
+   "fieldtype": "Data",
+   "label": "Reports To"
+  },
+  {
+   "depends_on": "eval: doc.is_gate_pass_approver && in_list(['Out-Personal Work','Out-Office Work','Inter-Movement'],doc.gatepass_type) \n",
+   "fieldname": "gate_pass_approver",
+   "fieldtype": "Table",
+   "label": "Gate Pass Approver",
+   "options": "Gate Pass Approver"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "depends_on": "eval:doc.employee",
+   "fetch_from": "employee.manufacturer",
+   "fieldname": "manufacturer",
+   "fieldtype": "Link",
+   "label": "Manufacturer",
+   "options": "Manufacturer"
+  },
+  {
+   "depends_on": "eval:in_list(['Out-Personal Work','Out-Office Work','Inter-Movement'],doc.gatepass_type)",
+   "fieldname": "floor",
+   "fieldtype": "Select",
+   "label": "Floor",
+   "options": "\nSecurity GF\nSecurity Shubh F1\nSecurity Shubh F2\nSecurity Shubh F3\nSecurity Shubh F4\nSecurity Amrut F1\nSecurity Amrut F2\nSecurity Amrut F3\nSecurity Labh F1\nSecurity Labh F2\nSecurity Labh F3\nSecurity Labh F4"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_gate_pass_approver",
+   "fieldtype": "Check",
+   "label": "Is Gate Pass Approver"
+  },
+  {
+   "fieldname": "inter_in_time",
+   "fieldtype": "Time",
+   "label": "Inter In Time"
+  },
+  {
+   "fieldname": "inter_out_time",
+   "fieldtype": "Time",
+   "label": "Inter Out Time"
+  },
+  {
+   "depends_on": "eval: doc.gatepass_type == 'For Interview'",
+   "fieldname": "contact_no",
+   "fieldtype": "Data",
+   "label": "Contact No",
+   "length": 10
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-12-05 10:02:58.823672",
+ "modified_by": "bhavika_patel@gkexport.com",
+ "module": "Gurukrupa Customizations",
+ "name": "Gate Pass",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "visitor_name",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }
