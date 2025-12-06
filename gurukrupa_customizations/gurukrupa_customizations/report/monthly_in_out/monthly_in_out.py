@@ -744,10 +744,12 @@ def process_data(data, filters):
 			shift_name = f"{format_time(shift_det.get('start_time'))} To {format_time(shift_det.get('end_time'))}"
 			row.shift = shift_name
 			
-			leave_status = frappe.db.get_value('Leave Type',{'name': row.leave_type,'is_earned_leave': 1}, ['name'])
+			leave_status = frappe.db.get_value('Leave Type',{'name': row.status,'is_earned_leave': 0}, ['name'])
 			if leave_status:
 				row.status = leave_status
 				row.net_wrk_hrs = timedelta(0)
+			else:
+				row.net_wrk_hrs = timedelta(hours=shift_hours)
 				
 		row["total_pay_hrs"] = row.net_wrk_hrs + (row.get("ot_hours") or timedelta(0))
 		row.status = STATUS.get(row.status) or row.status
