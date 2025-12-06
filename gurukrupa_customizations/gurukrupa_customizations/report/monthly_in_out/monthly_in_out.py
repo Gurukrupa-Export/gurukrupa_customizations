@@ -433,7 +433,7 @@ STATUS = {
 	"Absent" : "A",
 	"Present" : "P",
 	"Half Day" : "HD",
-	"Paid Leave" : "PL",
+	"Privilege Leave" : "PL",
 	"Casual Leave" : "CL",
 	"Sick Leave" : "SL",
 	"Leave Without Pay" : "LWP",
@@ -693,6 +693,9 @@ def process_data(data, filters):
 		.where(
 			(EmployeeCheckin.time.between(from_date, addition_day)) &
 			(EmployeeCheckin.employee == employee)
+			&
+			(EmployeeCheckin.attendance.isnotnull()) & 
+			(EmployeeCheckin.attendance != "")
 		)
 		.groupby(EmployeeCheckin.attendance)
 	).run(as_dict=True)
@@ -735,6 +738,12 @@ def process_data(data, filters):
 			if row.net_wrk_hrs.total_seconds() > shift_hours_in_sec or (shift_hours_in_sec - row.net_wrk_hrs.total_seconds()) < 60:
 				row.net_wrk_hrs = timedelta(hours=row.shift_hours)
 		else:
+			shift = emp_det.get("default_shift")
+			shift_det = frappe.db.get_value("Shift Type", shift, ['shift_hours','start_time', 'end_time'], as_dict=1)
+			shift_hours = flt(shift_det.get("shift_hours"))
+			shift_name = f"{format_time(shift_det.get('start_time'))} To {format_time(shift_det.get('end_time'))}"
+			row.shift = shift_name
+			
 			leave_status = frappe.db.get_value('Leave Type',{'name': row.leave_type,'is_earned_leave': 1}, ['name'])
 			if leave_status:
 				row.status = leave_status

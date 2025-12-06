@@ -4,17 +4,30 @@
 import frappe
 from frappe.model.document import Document
 from frappe.utils import nowtime, today, getdate
+from frappe.model.workflow import apply_workflow
 
 class GatePass(Document):
-	def before_save(self):
-		if self.is_new():
-			if self.gatepass_type == "In-Visitor":
-				self.in_time = nowtime()
-				self.out_time = None
-			else:
-				self.out_time = nowtime()
-				self.in_time = None
+	def after_insert(self):
+		if self.gatepass_type == "For Interview" or self.gatepass_type == "In-Visitor":
+			if self.in_time and self.workflow_state == 'Draft':
+				apply_workflow(self, "Approve")
 
+	def on_update(self):
+		if self.gatepass_type == "For Interview" or self.gatepass_type == "In-Visitor":
+			if self.out_time and self.workflow_state == 'Visitor-In':
+				apply_workflow(self, "Approve")
+		
+		if self.gatepass_type == "Inter-Movement":
+			if self.in_time and self.workflow_state == 'Out For Department':
+				apply_workflow(self, "In")
+		
+		if self.gatepass_type == "Out-Personal Work":
+			if self.in_time and self.workflow_state == 'Out Confirmed':
+				apply_workflow(self, "In Confirm")
+		
+		if self.gatepass_type == "Out-Office Work":
+			if self.in_time and self.workflow_state == 'Out Confirmed':
+				apply_workflow(self, "In Confirm")
 
 @frappe.whitelist()
 def get_recent_visits(gatepass_type):
