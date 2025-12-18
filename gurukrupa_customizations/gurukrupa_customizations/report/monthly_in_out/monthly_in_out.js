@@ -272,20 +272,26 @@ function set_employee_details(query_report) {
 
 function fetch_employees(query_report) {
 	var filters = get_filter_dict(query_report)
-	if (filters){
-		frappe.db.get_list("Employee",{"filters" : filters, "pluck":"name", "order_by":"name"}).then((r)=>{
-			query_report.set_filter_value("employees",r)
-			if (r.length != 0) {
-				query_report.current_emp = 0
-				query_report.emp_count = r.length
-				set_employee(query_report, query_report.current_emp)
+	if (filters){		
+		frappe.db.get_list("Employee", {
+			filters: {
+				...filters,                // existing dynamic filters (if any)
+				status: ["not in", ["Inactive", "Left"]]
+			},
+			pluck: "name",
+			order_by: "name"
+		}).then((r) => {
+			query_report.set_filter_value("employees", r);
+
+			if (r.length) {
+				query_report.current_emp = 0;
+				query_report.emp_count = r.length;
+				set_employee(query_report, query_report.current_emp);
+			} else {
+				query_report.set_filter_value("employee", null);
 			}
-			else {
-				query_report.set_filter_value({
-					"employee": null
-				});		
-			}
-		})
+		});
+		console.log(filters);
 	}
 	else {
 		query_report.emp_count = 0
