@@ -85,6 +85,7 @@ frappe.query_reports["Monthly In-Out"] = {
 			},
 			"on_change": function(query_report){
 				var emp_list = query_report.get_filter_value('employees')
+				console.log('emp_list', emp_list)
 				query_report.current_emp = 0
 				query_report.emp_count = emp_list.length
 				set_employee(query_report, query_report.current_emp)
@@ -279,7 +280,8 @@ function fetch_employees(query_report) {
 				status: ["not in", ["Inactive", "Left"]]
 			},
 			pluck: "name",
-			order_by: "name"
+			order_by: "name",
+			limit: 300
 		}).then((r) => {
 			query_report.set_filter_value("employees", r);
 
