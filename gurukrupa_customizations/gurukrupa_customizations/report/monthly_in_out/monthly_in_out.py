@@ -600,7 +600,7 @@ def get_totals(data, employee):
 		penalty_days = 0.5
 	if late_count >= 10 and late_count < 15:
 		penalty_days = 1
-	if late_count > 15:
+	if late_count >= 15:
 		penalty_days = 1.5
 
 	total_days = {"status":"Total Days"}
@@ -760,10 +760,15 @@ def process_data(data, filters):
 	date_range = get_date_range(from_date, to_date)
 	for date in date_range:
 		row = processed.get(date,ot_for_wo.get(date,{}))
+		status = row.get("status") or "XX"
 		if date in od:
-			row["status"] = "OD"
-			if ot_hours:=row.get("ot_hours"):
-				row['total_pay_hrs'] = ot_hours
+			status = "OD"
+			if row.get("ot_hours"):
+				if ot_hours:=row.get("ot_hours"):
+					row['total_pay_hrs'] = ot_hours
+			else:
+				# row["status"] = "OD"
+				row['total_pay_hrs'] = row.get("total_pay_hrs")
 		elif date in wo and (date >= getdate(emp_det.get("date_of_joining"))):
 			status = "WO"
 			date_time = datetime.combine(getdate(date), get_time(shift_det.start_time))
@@ -786,7 +791,8 @@ def process_data(data, filters):
 			status = "XX"
 		if count:=checkins.get(date):
 			if count %2 != 0:
-				row["status"] = "ERR" 
+				# row["status"] = "ERR" 
+				status = "ERR"
 				row['net_wrk_hrs'] = timedelta(0)
 				row['total_pay_hrs'] = timedelta(0)
 		temp = {

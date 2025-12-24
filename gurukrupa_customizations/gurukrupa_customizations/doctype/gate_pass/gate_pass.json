@@ -289,11 +289,13 @@
    "label": "Is Gate Pass Approver"
   },
   {
+   "depends_on": "eval:doc.gatepass_type == 'Inter-Movement'",
    "fieldname": "inter_in_time",
    "fieldtype": "Time",
    "label": "Inter In Time"
   },
   {
+   "depends_on": "eval:doc.gatepass_type == 'Inter-Movement'",
    "fieldname": "inter_out_time",
    "fieldtype": "Time",
    "label": "Inter Out Time"
