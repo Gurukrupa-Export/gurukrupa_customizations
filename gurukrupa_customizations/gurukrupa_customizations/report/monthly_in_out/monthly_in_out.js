@@ -281,7 +281,7 @@ function fetch_employees(query_report) {
 			},
 			pluck: "name",
 			order_by: "name",
-			limit: 300
+			limit: 30
 		}).then((r) => {
 			query_report.set_filter_value("employees", r);
 
