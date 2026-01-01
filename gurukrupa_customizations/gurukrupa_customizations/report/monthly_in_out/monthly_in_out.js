@@ -81,6 +81,12 @@ frappe.query_reports["Monthly In-Out"] = {
 			get_data: function(txt) {
 				var filters = get_filter_dict(frappe.query_report)
 				if (!filters) filters = {}
+
+				if(filters.company || filters.department){
+					filters.status = ["not in", ["Inactive", "Left"]];	
+				}
+				console.log('filters',filters, txt);
+
 				return frappe.db.get_link_options('Employee', txt, filters);
 			},
 			"on_change": function(query_report){
