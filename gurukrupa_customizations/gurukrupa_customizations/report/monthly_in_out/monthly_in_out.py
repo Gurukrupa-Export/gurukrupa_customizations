@@ -582,6 +582,9 @@ def get_totals(data, employee):
 	late_count = 0
 	penalty_days = 0
 	net_wrk = {}
+	totals["shift_hours"] = 0.0
+
+	# shift_hrs = frappe.db
 	
 	for row in data:
 		totals["net_wrk_hrs"] += (row.get("net_wrk_hrs") or timedelta(0))
@@ -593,8 +596,9 @@ def get_totals(data, employee):
 		totals["spent_hours"] += (row.get("spent_hours") or timedelta(0))
 		if row.get("late_entry"):
 			late_count += 1
-		if row.get("shift_hours"):
-			totals["shift_hours"] = row.get("shift_hours")
+		if not totals["shift_hours"] and row.get("shift_hours"):
+			totals["shift_hours"] = flt(row.get("shift_hours"))
+
 		
 	if late_count > 4 and late_count < 10:
 		penalty_days = 0.5
@@ -603,8 +607,13 @@ def get_totals(data, employee):
 	if late_count >= 15:
 		penalty_days = 1.5
 
-	total_days = {"status":"Total Days"}
-	conversion_factor = 3600 * flt(totals["shift_hours"])
+	total_days = {"status":"Total Days"}	
+	conversion_factor = 0
+	con_factor = 3600 * flt(totals["shift_hours"])
+	if con_factor > 0:
+		conversion_factor = con_factor
+	else:
+		conversion_factor = 1
 
 	penalty_hrs = timedelta(hours=flt(totals["shift_hours"])*penalty_days)
 	for key,value in totals.items():
