@@ -13,6 +13,7 @@
   "weekly_off",
   "column_break_lsnag",
   "allow",
+  "allow_excess_ot",
   "allowed_ot",
   "remarks",
   "first_in",
@@ -22,6 +23,7 @@
   "section_break_nzymg",
   "company",
   "designation",
+  "shift",
   "column_break_9aur2",
   "branch",
   "department"
@@ -38,7 +40,6 @@
   {
    "fieldname": "employee_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Employee Name",
    "read_only": 1
   },
@@ -160,17 +161,33 @@
    "fieldtype": "Check",
    "label": "Weekly Off",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_excess_ot",
+   "fieldtype": "Check",
+   "label": "Allow Excess OT"
+  },
+  {
+   "fieldname": "shift",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Shift",
+   "options": "Shift Type",
+   "read_only": 1
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-17 18:06:51.142459",
- "modified_by": "Administrator",
+ "modified": "2026-01-16 16:14:20.804782",
+ "modified_by": "bhavika_p@gkexport.com",
  "module": "Gurukrupa Customizations",
  "name": "OT Details",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
