@@ -1574,24 +1574,24 @@ def get_data(filters=None):
 				- IF(TIME(Attendance.in_time) < ShiftType.start_time,
 					TIME_TO_SEC(TIMEDIFF(ShiftType.start_time, TIME(Attendance.in_time))), 0)
 				
-				# - IF(Attendance.out_time > TIMESTAMP(Date(Attendance.in_time), ShiftType.end_time),
-				# 	TIME_TO_SEC(TIMEDIFF(Attendance.out_time, TIMESTAMP(Date(Attendance.in_time), ShiftType.end_time))), 0)
+				- IF(Attendance.out_time > TIMESTAMP(Date(Attendance.in_time), ShiftType.end_time),
+					TIME_TO_SEC(TIMEDIFF(Attendance.out_time, TIMESTAMP(Date(Attendance.in_time), ShiftType.end_time))), 0)
 				
-				# for night shift
-				- IF(Attendance.in_time > TIMESTAMP(Date(Attendance.out_time), ShiftType.start_time),
-					TIME_TO_SEC(TIMEDIFF(Attendance.in_time, TIMESTAMP(Date(Attendance.out_time), ShiftType.start_time))), 0)
+				# # for night shift
+				# - IF(Attendance.in_time > TIMESTAMP(Date(Attendance.out_time), ShiftType.start_time),
+				# 	TIME_TO_SEC(TIMEDIFF(Attendance.in_time, TIMESTAMP(Date(Attendance.out_time), ShiftType.start_time))), 0)
 
-				# regular shift
-				- IF(Attendance.out_time > IF(ShiftType.start_time > ShiftType.end_time, 
-						TIMESTAMP(ADDDATE(Date(Attendance.in_time), 1), ShiftType.end_time),
-						TIMESTAMP(Date(Attendance.in_time), ShiftType.end_time)
-					),
-					TIME_TO_SEC(TIMEDIFF(Attendance.out_time, IF(ShiftType.start_time > ShiftType.end_time, 
-						TIMESTAMP(ADDDATE(Date(Attendance.in_time), 1), ShiftType.end_time),
-						TIMESTAMP(Date(Attendance.in_time), ShiftType.end_time)
-					))), 
-					0
-				)
+				# # regular shift
+				# - IF(Attendance.out_time > IF(ShiftType.start_time > ShiftType.end_time, 
+				# 		TIMESTAMP(ADDDATE(Date(Attendance.in_time), 1), ShiftType.end_time),
+				# 		TIMESTAMP(Date(Attendance.in_time), ShiftType.end_time)
+				# 	),
+				# 	TIME_TO_SEC(TIMEDIFF(Attendance.out_time, IF(ShiftType.start_time > ShiftType.end_time, 
+				# 		TIMESTAMP(ADDDATE(Date(Attendance.in_time), 1), ShiftType.end_time),
+				# 		TIMESTAMP(Date(Attendance.in_time), ShiftType.end_time)
+				# 	))), 
+				# 	0
+				# )
 				
 				- IfNull(TIME_TO_SEC(pol_subquery.hrs), 0)
 				+ (
