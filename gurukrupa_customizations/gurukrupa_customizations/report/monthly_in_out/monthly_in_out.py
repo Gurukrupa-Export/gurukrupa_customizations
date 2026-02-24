@@ -3055,6 +3055,7 @@ def process_data(data, filters):
 
 		if date in od:
 			status = "OD"
+			row["status"] = status
 			date_time = datetime.combine(getdate(date), get_time(shift_det.start_time))
 			if first_in_last_out := get_checkins(employee,date_time):		
 				row["in_time"] = get_time(first_in_last_out[0].get("time"))
@@ -3067,6 +3068,7 @@ def process_data(data, filters):
 
 		elif date in wo and (date >= getdate(emp_det.get("date_of_joining"))):
 			status = "WO"
+			row["status"] = status
 			date_time = datetime.combine(getdate(date), get_time(shift_det.start_time))
 			
 			################## PREVS ##################################
