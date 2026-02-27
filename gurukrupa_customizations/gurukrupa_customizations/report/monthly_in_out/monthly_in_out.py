@@ -3067,44 +3067,46 @@ def process_data(data, filters):
 				row['total_pay_hrs'] = row.get("total_pay_hrs") or timedelta(0)
 
 		elif date in wo and (date >= getdate(emp_det.get("date_of_joining"))):
-			status = "WO"
-			row["status"] = status
-			date_time = datetime.combine(getdate(date), get_time(shift_det.start_time))
-			
-			################## PREVS ##################################
-			# if first_in_last_out := get_checkins(employee,date_time):		
-			# 	row["in_time"] = get_time(first_in_last_out[0].get("time"))
-			# 	row["out_time"] = get_time(first_in_last_out[-1].get("time"))
+			if row.get("status") not in ["LWP", "PL", "CL", "SL", "ML","WFH"]:
+				row["status"] = "WO"
+				status = "WO"
+				row["status"] = status
+				date_time = datetime.combine(getdate(date), get_time(shift_det.start_time))
+				
+				################## PREVS ##################################
+				# if first_in_last_out := get_checkins(employee,date_time):		
+				# 	row["in_time"] = get_time(first_in_last_out[0].get("time"))
+				# 	row["out_time"] = get_time(first_in_last_out[-1].get("time"))
 
-			
-			################## NEW ##################################
-			# Get check-ins for this WO date
-			# Note: get_checkins() may return check-ins from previous day's night shift
-			# that ended on this WO date (e.g., 31-Jan 19:59 IN, 01-Feb 08:00 OUT)
-			if first_in_last_out := get_checkins(employee, date_time):
-				# Filter check-ins by checking if they have a linked Attendance record
-				# Check-ins WITH attendance field: belong to a previous shift (e.g., 31-Jan night shift)
-				# Check-ins WITHOUT attendance field: likely incomplete OT work on WO day
-				for ci in first_in_last_out:
-					# Check if this check-in is linked to an Attendance record
-					if frappe.db.get_value("Employee Checkin", {"name": ci.get("employee_checkin")}, "attendance"):
-						# This check-in belongs to a previous shift's attendance record
-						# Don't show times to avoid confusion (previous shift's data)
-						has_checkin_error = False  # No error - it's from a valid previous attendance
-						row["in_time"] = ""
-						row["out_time"] = ""
-					else:
-						# This check-in has no attendance record (incomplete OT work on WO)
-						# Show the check-in times for review
-						row["in_time"] = get_time(first_in_last_out[0].get("time"))
-						row["out_time"] = get_time(first_in_last_out[-1].get("time"))
-			else:
-				# No check-ins found for this WO date - clean WO
-				has_checkin_error = False
-			
-			# Add OT hours if OT Log exists (created 1-2 days after work)
-			if ot_hours:=row.get("ot_hours"):
-				row['total_pay_hrs'] = ot_hours
+				
+				################## NEW ##################################
+				# Get check-ins for this WO date
+				# Note: get_checkins() may return check-ins from previous day's night shift
+				# that ended on this WO date (e.g., 31-Jan 19:59 IN, 01-Feb 08:00 OUT)
+				if first_in_last_out := get_checkins(employee, date_time):
+					# Filter check-ins by checking if they have a linked Attendance record
+					# Check-ins WITH attendance field: belong to a previous shift (e.g., 31-Jan night shift)
+					# Check-ins WITHOUT attendance field: likely incomplete OT work on WO day
+					for ci in first_in_last_out:
+						# Check if this check-in is linked to an Attendance record
+						if frappe.db.get_value("Employee Checkin", {"name": ci.get("employee_checkin")}, "attendance"):
+							# This check-in belongs to a previous shift's attendance record
+							# Don't show times to avoid confusion (previous shift's data)
+							has_checkin_error = False  # No error - it's from a valid previous attendance
+							row["in_time"] = ""
+							row["out_time"] = ""
+						else:
+							# This check-in has no attendance record (incomplete OT work on WO)
+							# Show the check-in times for review
+							row["in_time"] = get_time(first_in_last_out[0].get("time"))
+							row["out_time"] = get_time(first_in_last_out[-1].get("time"))
+				else:
+					# No check-ins found for this WO date - clean WO
+					has_checkin_error = False
+				
+				# Add OT hours if OT Log exists (created 1-2 days after work)
+				if ot_hours:=row.get("ot_hours"):
+					row['total_pay_hrs'] = ot_hours
 			##########################################################################
 		elif (date in holidays) and (date >= getdate(emp_det.get("date_of_joining"))):
 			if row.get("status") in ["LWP", "PL", "CL", "SL", "ML","WFH"]:
