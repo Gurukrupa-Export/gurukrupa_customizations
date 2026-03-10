@@ -11,6 +11,7 @@
   "attendance_date",
   "attn_ot_hrs",
   "weekly_off",
+  "ot_request_hrs",
   "column_break_lsnag",
   "allow",
   "allow_excess_ot",
@@ -174,6 +175,12 @@
    "in_list_view": 1,
    "label": "Shift",
    "options": "Shift Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ot_request_hrs",
+   "fieldtype": "Time",
+   "label": "OT Req Hrs",
    "read_only": 1
   }
  ],
