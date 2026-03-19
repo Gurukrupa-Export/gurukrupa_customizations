@@ -20,16 +20,21 @@ frappe.ui.form.on('Gate Pass', {
 		// Auto defaults for new docs
 		if (frm.is_new()) {
 			if (["In-Visitor", "For Interview"].includes(frm.doc.gatepass_type)) {
-				frm.set_value('in_time', frappe.datetime.now_time());
+				frm.set_value('in_time', frappe.datetime.now_datetime());
 				frm.set_value('out_time', '');
 				frm.set_value('inter_in_time', '');
 				frm.set_value('inter_out_time', '');
 			} else {
-				frm.set_value('out_time', frappe.datetime.now_time());
+				frm.set_value('out_time', frappe.datetime.now_datetime());
 				frm.set_value('in_time', '');
 				frm.set_value('inter_in_time', '');
 				frm.set_value('inter_out_time', '');
 			}
+			// if (frm.doc.workflow_state === 'Send to Manager'){
+			// 	frm.set_value('in_time', '');
+			// 	frm.set_value('inter_in_time', '');
+			// 	frm.set_value('inter_out_time', '');
+			// }
 
 			
 			// remove custom button only if form is not new
@@ -76,29 +81,29 @@ frappe.ui.form.on('Gate Pass', {
 	after_workflow_action(frm) {
         setTimeout(() => {
             if(frm.doc.gatepass_type === 'Inter-Movement' && frm.doc.workflow_state === 'Out For Department' && !frm.doc.in_time){
-				frm.set_value('out_time', frappe.datetime.now_time());
+				frm.set_value('out_time', frappe.datetime.now_datetime());
 				frm.save()
 			}
             if(frm.doc.gatepass_type === 'Inter-Movement' && frm.doc.workflow_state === 'In For Department'){
-				frm.set_value('inter_in_time', frappe.datetime.now_time());
+				frm.set_value('inter_in_time', frappe.datetime.now_datetime());
 				frm.save()
 			}
 			if(frm.doc.gatepass_type === 'Inter-Movement' && frm.doc.workflow_state === 'Send to Floor Security' && frm.doc.inter_in_time){
-				frm.set_value('inter_out_time', frappe.datetime.now_time());
+				frm.set_value('inter_out_time', frappe.datetime.now_datetime());
 				frm.save()
 			}
 			if(frm.doc.gatepass_type === 'Inter-Movement' && frm.doc.workflow_state === 'Returned To Department' && !frm.doc.in_time){
-				frm.set_value('in_time', frappe.datetime.now_time());
+				frm.set_value('in_time', frappe.datetime.now_datetime());
 				frm.save()
 			}
         }, 100);
     },
     gatepass_type(frm) {
         if (["In-Visitor", "For Interview"].includes(frm.doc.gatepass_type)) {
-            frm.set_value('in_time', frappe.datetime.now_time());
+            frm.set_value('in_time', frappe.datetime.now_datetime());
             frm.set_value('out_time', '');
         } else {
-            frm.set_value('out_time', frappe.datetime.now_time());
+            frm.set_value('out_time', frappe.datetime.now_datetime());
             frm.set_value('in_time', '');
         }
     },
@@ -110,6 +115,18 @@ frappe.ui.form.on('Gate Pass', {
 		if (frm.doc.employee) {
 			frappe.db.get_value("Employee",frm.doc.employee, "employee_name", (r)=>{
 				frm.set_value("visitor_name", r.employee_name)
+			})
+		}
+	},
+	punch_id (frm) {
+		if (frm.doc.punch_id) {
+			frappe.db.get_value("Employee", {attendance_device_id: frm.doc.punch_id}, ["name", "employee_name", "department", "company","branch", "designation"], (r)=>{
+				frm.set_value("employee", r.name)
+				frm.set_value("visitor_name", r.employee_name)
+				frm.set_value("department", r.department)
+				frm.set_value("company_name", r.company)
+				frm.set_value("branch", r.branch)
+				frm.set_value("designation", r.designation)
 			})
 		}
 	},
@@ -155,8 +172,8 @@ function add_gatepass_button(frm, field, label) {
             fields: [{
                 fieldname: field,
                 label: __('Time'),
-                fieldtype: 'Time',
-                default: frappe.datetime.now_time()
+                fieldtype: 'Datetime',
+                default: frappe.datetime.now_datetime()
             }]
         });
 

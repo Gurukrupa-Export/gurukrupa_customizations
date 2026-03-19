@@ -12,6 +12,14 @@ class GatePass(Document):
 			if self.in_time and self.workflow_state == 'Draft':
 				apply_workflow(self, "Approve")
 
+	def before_save(self):
+		if self.gatepass_type in ["Inter-Movement", "Out-Personal Work", "Out-Office Work"]:
+			if self.out_time and self.workflow_state == 'Send to Manager':
+				self.inter_out_time = ''
+				self.inter_in_time = ''
+				self.in_time = ''
+
+				
 	def on_update(self):
 		if self.gatepass_type == "For Interview" or self.gatepass_type == "In-Visitor":
 			if self.out_time and self.workflow_state == 'Visitor-In':
@@ -20,8 +28,13 @@ class GatePass(Document):
 		if self.gatepass_type == "Inter-Movement":
 			if self.in_time and self.workflow_state == 'Out For Department':
 				apply_workflow(self, "In")
+			
+		if self.gatepass_type in ["Inter-Movement", "Out-Personal Work", "Out-Office Work"]:
+			if self.out_time and self.workflow_state == 'Draft':
+				apply_workflow(self, "Send to Manager") 
 		
 		if self.gatepass_type == "Out-Personal Work":
+			# frappe.throw(f"Workfloe :  {self.as_dict()}")
 			if self.in_time and self.workflow_state == 'Out Confirmed':
 				apply_workflow(self, "In Confirm")
 		
@@ -31,19 +44,19 @@ class GatePass(Document):
 
 @frappe.whitelist()
 def get_recent_visits(gatepass_type):
-	filters = {"gatepass_type":gatepass_type, "visit_date": getdate(today())}
+	filters = {"gatepass_type": gatepass_type, "visit_date": getdate(today())}
 	if gatepass_type == "In-Visitor":
 		filters["out_time"] = ['is', "not set"]
 	else:
 		filters["in_time"] = ['is', "not set"]
 		
-	data = frappe.db.get_list("Gate Pass", filters=filters,fields="*")
+	data = frappe.db.get_all("Gate Pass", filters=filters, fields="*")
 	return frappe.render_template("gurukrupa_customizations/gurukrupa_customizations/doctype/gate_pass/recent_visitors.html", {"data":data})
 
 @frappe.whitelist()
 def update_gatepass(docname,type="In",time=None):	#type is gatepass type
 	field = "in_time" if type == "Out" else "out_time"
 	if not time:
-		time = frappe.utils.nowtime()
+		time = frappe.utils.get_datetime()
 	frappe.db.set_value("Gate Pass", docname, field, time)
 	return 1
