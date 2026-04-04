@@ -30,6 +30,7 @@
   "emp_department",
   "emp_designation",
   "manufacturer",
+  "confirmation_of_exit",
   "column_break_9",
   "person_to_meet",
   "department",
@@ -315,12 +316,20 @@
    "fieldtype": "Data",
    "label": "Punch ID",
    "mandatory_depends_on": "eval:in_list(['Out-Personal Work','Out-Office Work','Inter-Movement'],doc.gatepass_type)"
+  },
+  {
+   "depends_on": "eval:in_list(['Out-Personal Work','Out-Office Work'],doc.gatepass_type)",
+   "description": "Exit (Will not return)\nOut (Will return to office)",
+   "fieldname": "confirmation_of_exit",
+   "fieldtype": "Select",
+   "label": "Are you coming back to the office after your exit?",
+   "options": "\nOut\nExit"
   }
  ],
  "image_field": "visitor_photo",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-12-05 10:02:58.823672",
+ "modified": "2026-04-04 16:13:35.243192",
  "modified_by": "bhavika_patel@gkexport.com",
  "module": "Gurukrupa Customizations",
  "name": "Gate Pass",

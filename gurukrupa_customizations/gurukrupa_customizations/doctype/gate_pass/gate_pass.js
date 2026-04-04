@@ -88,7 +88,8 @@ frappe.ui.form.on('Gate Pass', {
 				frm.set_value('inter_in_time', frappe.datetime.now_datetime());
 				frm.save()
 			}
-			if(frm.doc.gatepass_type === 'Inter-Movement' && frm.doc.workflow_state === 'Send to Floor Security' && frm.doc.inter_in_time){
+			// if(frm.doc.gatepass_type === 'Inter-Movement' && frm.doc.workflow_state === 'Send to Floor Security' && frm.doc.inter_in_time){
+			if(frm.doc.gatepass_type === 'Inter-Movement' && frm.doc.inter_in_time){
 				frm.set_value('inter_out_time', frappe.datetime.now_datetime());
 				frm.save()
 			}
