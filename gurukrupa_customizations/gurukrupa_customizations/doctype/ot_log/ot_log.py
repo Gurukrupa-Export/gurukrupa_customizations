@@ -17,10 +17,10 @@ class OTLog(Document):
 		Recalculate Monthly In-Out Log when OT Log changes
 		"""
 		try:
-			if not self.employee or not self.date:
+			if not self.employee or not self.attendance_date:
 				return
 
-			attendance_date = getdate(self.date)
+			attendance_date = getdate(self.attendance_date)
 
 			mil_name = frappe.db.get_value(
 				"Monthly In-Out Log",
