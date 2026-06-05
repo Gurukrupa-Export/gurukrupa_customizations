@@ -2585,6 +2585,7 @@ def get_data(filters=None):
 	Attendance = frappe.qb.DocType("Attendance")
 	Employee = frappe.qb.DocType("Employee")
 	ShiftType = frappe.qb.DocType("Shift Type")
+	ShiftAssignment = frappe.qb.DocType("Shift Assignment")
 	PersonalOutLog = frappe.qb.DocType("Personal Out Log")
 	OTLog = frappe.qb.DocType("OT Log")
 
@@ -2652,7 +2653,17 @@ def get_data(filters=None):
 	query = (
 		frappe.qb.from_(Attendance)
 		.left_join(Employee).on(Attendance.employee == Employee.name)
-		.left_join(ShiftType).on(Attendance.shift == ShiftType.name)
+		# .left_join(ShiftType).on(Attendance.shift == ShiftType.name)
+		.left_join(ShiftAssignment).on(
+      		(Attendance.employee == ShiftAssignment.employee) &
+			(Attendance.attendance_date.between(ShiftAssignment.start_date, ShiftAssignment.end_date)) 
+   			# & (ShiftAssignment.shift_type == Attendance.shift)
+        )
+		.left_join(ShiftType).on(
+			( (ShiftAssignment.shift_type.isnotnull()) & (ShiftAssignment.shift_type == ShiftType.name) ) 
+   			|
+			( (ShiftAssignment.shift_type.isnull()) & (Attendance.shift == ShiftType.name) )
+		)
 		.left_join(pol_subquery).on(
 			(Attendance.attendance_date == pol_subquery.date) &
 			(Attendance.employee == pol_subquery.employee)
@@ -2663,7 +2674,11 @@ def get_data(filters=None):
 		)
 		.select(
 			Attendance.attendance_date, 
-			(Attendance.shift).as_('shift_name'),
+			# (Attendance.shift).as_('shift_name'),
+			IF( ShiftAssignment.shift_type.isnotnull(),
+				ShiftAssignment.shift_type,
+				Attendance.shift
+			).as_("shift_name"),
 
 			Concat(TIME_FORMAT(ShiftType.start_time, "%H:%i:%s"), " TO ", TIME_FORMAT(ShiftType.end_time, "%H:%i:%s")).as_('shift'),
 			
@@ -2770,7 +2785,9 @@ def get_data(filters=None):
 			IfNull(Attendance.leave_type, Attendance.status).as_('status'),
 			Attendance.attendance_request
 		)
-		.where((Attendance.docstatus == 1))
+		.where((Attendance.docstatus == 1) & 
+        	IF(ShiftAssignment.shift_type, ShiftAssignment.shift_type == Attendance.shift, Attendance.shift == ShiftType.name)		
+		)
 		.orderby(Attendance.attendance_date, order=frappe.qb.asc)
 	)
 
