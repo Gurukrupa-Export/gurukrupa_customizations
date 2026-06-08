@@ -2677,7 +2677,8 @@ def get_data(filters=None):
 			# (Attendance.shift).as_('shift_name'),
 			IF( ShiftAssignment.shift_type.isnotnull(),
 				ShiftAssignment.shift_type,
-				Attendance.shift
+				# Attendance.shift
+			   	Employee.default_shift
 			).as_("shift_name"),
 
 			Concat(TIME_FORMAT(ShiftType.start_time, "%H:%i:%s"), " TO ", TIME_FORMAT(ShiftType.end_time, "%H:%i:%s")).as_('shift'),
@@ -2785,8 +2786,9 @@ def get_data(filters=None):
 			IfNull(Attendance.leave_type, Attendance.status).as_('status'),
 			Attendance.attendance_request
 		)
-		.where((Attendance.docstatus == 1) & 
-        	IF(ShiftAssignment.shift_type, ShiftAssignment.shift_type == Attendance.shift, Attendance.shift == ShiftType.name)		
+		.where((Attendance.docstatus == 1) 
+			   # & 
+      #   	IF(ShiftAssignment.shift_type, ShiftAssignment.shift_type == Attendance.shift, Attendance.shift == ShiftType.name)		
 		)
 		.orderby(Attendance.attendance_date, order=frappe.qb.asc)
 	)
