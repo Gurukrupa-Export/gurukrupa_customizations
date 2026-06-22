@@ -3020,7 +3020,7 @@ def process_data(data, filters):
 					row.total_pay_hrs = row.net_wrk_hrs + (row.ot_hours or timedelta(0))
 
 		if row.lh:
-			row.status = 'LH'
+			row.status = STATUS.get(row.status) or 'LH'
 		shift_hours_in_sec = 0
 		
 		if row.shift_hours:
