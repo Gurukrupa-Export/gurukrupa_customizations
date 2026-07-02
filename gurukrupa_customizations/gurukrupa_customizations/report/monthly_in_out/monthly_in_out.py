@@ -2987,13 +2987,36 @@ def process_data(data, filters):
 	#########################################################
 	
 	checkins = {row.login_date: row.cnt for row in checkins}
-	od = frappe.get_list("Employee Checkin",{'employee':employee,'source':"Outdoor Duty", "time": ['between',[from_date,add_days(to_date,1)]]},'date(time) as login_date', pluck='login_date',group_by='login_date')
+	# od = frappe.get_list("Employee Checkin",{'employee':employee,'source':"Outdoor Duty", "time": ['between',[from_date,add_days(to_date,1)]]},'date(time) as login_date', pluck='login_date',group_by='login_date')
+	od = frappe.db.sql("""
+			SELECT DATE(time) as login_date
+			FROM `tabEmployee Checkin`
+			WHERE employee = %(employee)s
+				AND source = 'Outdoor Duty'
+				AND time BETWEEN %(from_date)s AND %(to_date)s
+			GROUP BY DATE(time)
+		""", {
+			'employee': employee,
+			'from_date': from_date,
+			'to_date': add_days(to_date, 1)
+		}, pluck='login_date')
+
 	if shift and not emp_det.get('holiday_list'):
 			emp_det['holiday_list'] = shift_det.get("holiday_list")
 	
 	if hl_name:=emp_det.get('holiday_list'):
-		holidays = frappe.get_list("Holiday", {"parent": hl_name,
-					"holiday_date":["between",[from_date, to_date]]}, ["holiday_date","weekly_off"], ignore_permissions=1)
+		# holidays = frappe.get_list("Holiday", {"parent": hl_name,
+		# 			"holiday_date":["between",[from_date, to_date]]}, ["holiday_date","weekly_off"], ignore_permissions=1)
+		holidays = frappe.db.sql("""
+				SELECT holiday_date, weekly_off
+				FROM `tabHoliday`
+				WHERE parent = %(hl_name)s
+					AND holiday_date BETWEEN %(from_date)s AND %(to_date)s
+			""", {
+				'hl_name': hl_name,
+				'from_date': from_date,
+				'to_date': to_date
+			}, as_dict=1)
 		wo = [row.holiday_date for row in holidays if row.weekly_off]
 		holidays = [row.holiday_date for row in holidays if not row.weekly_off]
 
@@ -3056,7 +3079,23 @@ def process_data(data, filters):
 		row.status = STATUS.get(row.status) or row.status
 		processed[row.attendance_date] = row
 
-	ot_for_wo = frappe.get_all("OT Log", {"employee":employee,"attendance_date": ["between",[from_date,to_date]], "is_cancelled":0}, ["attendance_date","allowed_ot as ot_hours", "first_in as in_time", "last_out as out_time"])
+	# ot_for_wo = frappe.get_all("OT Log", {"employee":employee,"attendance_date": ["between",[from_date,to_date]], "is_cancelled":0}, ["attendance_date","allowed_ot as ot_hours", "first_in as in_time", "last_out as out_time"])
+	ot_for_wo = frappe.db.sql("""
+		SELECT
+			attendance_date,
+			allowed_ot as ot_hours,
+			first_in as in_time,
+			last_out as out_time
+		FROM `tabOT Log`
+		WHERE employee = %(employee)s
+			AND attendance_date BETWEEN %(from_date)s AND %(to_date)s
+			AND is_cancelled = 0
+	""", {
+		'employee': employee,
+		'from_date': from_date,
+		'to_date': to_date
+	}, as_dict=1)
+	
 	ot_for_wo = {row.attendance_date: row for row in ot_for_wo}
 	date_range = get_date_range(from_date, to_date)
 
