@@ -3052,6 +3052,10 @@ def process_data(data, filters):
 			if row.status not in ['Leave Without Pay', 'Absent']:
 				if row.net_wrk_hrs.total_seconds() > shift_hours_in_sec or (shift_hours_in_sec - row.net_wrk_hrs.total_seconds()) < 60:
 					row.net_wrk_hrs = timedelta(hours=row.shift_hours)
+			leave_status = frappe.db.get_value('Leave Type',{'name': row.status,'is_earned_leave': 1}, ['name'])
+			if leave_status:
+				row.status = STATUS.get(row.status) or row.status
+				row.net_wrk_hrs = timedelta(hours=row.shift_hours)
 		else:
 			shift = emp_det.get("default_shift")
 			shift_det = frappe.db.get_value("Shift Type", shift, ['shift_hours','start_time', 'end_time'], as_dict=1)
