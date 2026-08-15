@@ -1,5 +1,6 @@
 [project]
 name = "gurukrupa_customizations"
+description = "gurukrupa customizations"
 version = "0.0.1"
 authors = [
     { name = "Gurukrupa Export" }
