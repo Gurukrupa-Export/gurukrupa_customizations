@@ -1,6 +1,13 @@
+import re
+
 import frappe
 from frappe.utils import getdate
 from hrms.payroll.doctype.salary_slip.salary_slip import SalarySlip
+
+from gurukrupa_customizations.overrides.salary_structure_assignment import (
+    SLIP_ONLY_FORMULA_FIELDS,
+    build_evaluated_component_row,
+)
 """
 Provided by sourav, navin
 """
@@ -323,6 +330,62 @@ def before_save(doc, method=None):
 
 
 class CustomSalarySlip(SalarySlip):
+    def _set_evaluated_components(self) -> None:
+        """HRMS v16 evaluates salary structure formulas in Salary Structure
+        Assignment before Salary Slip calculation. Since slip-only fields
+        (e.g. extra_working_hours, hourly_rate) are unavailable there,
+        seed default values to avoid evaluation errors, then restore any
+        skipped components for re-evaluation on the Salary Slip."""
+        self._set_slip_formula_defaults()
+        frappe.flags.gurukrupa_slip_formula_fields = self._get_slip_formula_fields()
+        try:
+            super()._set_evaluated_components()
+        finally:
+            frappe.flags.gurukrupa_slip_formula_fields = None
+
+        self._restore_slip_dependent_component_rows()
+
+    def _set_slip_formula_defaults(self) -> None:
+        # formulas must never see None for numeric slip fields
+        # (e.g. "None > 0" raises TypeError inside safe_eval)
+        if self.get("extra_working_hours") is None:
+            self.extra_working_hours = 0
+        if self.get("hourly_rate") is None:
+            self.hourly_rate = 0
+        if self.get("custom_extra_payment_days") is None:
+            self.custom_extra_payment_days = 0
+        if self.get("custom_month") is None and self.start_date:
+            self.custom_month = getdate(self.start_date).month
+
+    def _get_slip_formula_fields(self) -> dict:
+        return {
+            "extra_working_hours": frappe.utils.flt(self.get("extra_working_hours")),
+            "hourly_rate": frappe.utils.flt(self.get("hourly_rate")),
+            "custom_extra_payment_days": frappe.utils.flt(self.get("custom_extra_payment_days")),
+            "custom_month": self.get("custom_month"),
+            "_is_pf_applicable": frappe.utils.cint(self.get("_is_pf_applicable")),
+            "_is_physical_handicap": frappe.utils.cint(self.get("_is_physical_handicap")),
+        }
+
+    def _restore_slip_dependent_component_rows(self) -> None:
+        # Restore components skipped during SSA evaluation because they
+        # depend on Salary Slip-only fields.
+        if not getattr(self, "_evaluated_components", None):
+            return
+
+        structure = frappe.get_cached_doc("Salary Structure", self.salary_structure)
+        for component_type in ("earnings", "deductions", "employer_contributions"):
+            evaluated_rows = self._evaluated_components.get(component_type) or []
+            present = {row.salary_component for row in evaluated_rows}
+
+            for struct_row in structure.get(component_type) or []:
+                if struct_row.salary_component in present:
+                    continue
+                if _references_slip_only_fields(
+                    struct_row.condition
+                ) or _references_slip_only_fields(struct_row.formula):
+                    evaluated_rows.append(build_evaluated_component_row(struct_row))
+
     def get_holidays_for_employee(self, start_date, end_date):
         from erpnext.setup.doctype.employee.employee import get_holiday_list_for_employee
         # HOLIDAYS_BETWEEN_DATES = "holidays_between_dates"
@@ -354,3 +417,12 @@ def get_holiday_dates_between(
 		query = query.where(Holiday.weekly_off == 1)
 
 	return query.run(pluck=True)
+
+
+def _references_slip_only_fields(expression) -> bool:
+    if not expression:
+        return False
+    return any(
+        re.search(rf"\b{re.escape(fieldname)}\b", expression)
+        for fieldname in SLIP_ONLY_FORMULA_FIELDS
+    )

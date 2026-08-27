@@ -57,7 +57,8 @@ fixtures = [
 
 override_doctype_class = {
     # "Payment Entry": "gurukrupa_customizations.overrides.payment_entry.CustomPaymentEntry",
-	"Salary Slip": "gurukrupa_customizations.overrides.salary_slip.CustomSalarySlip"
+	"Salary Slip": "gurukrupa_customizations.overrides.salary_slip.CustomSalarySlip",
+	"Salary Structure Assignment": "gurukrupa_customizations.overrides.salary_structure_assignment.CustomSalaryStructureAssignment",
     }
 
 # from erpnext.accounts.doctype.payment_entry.payment_entry import PaymentEntry
