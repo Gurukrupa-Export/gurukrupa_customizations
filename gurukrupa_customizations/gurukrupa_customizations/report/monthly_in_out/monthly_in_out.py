@@ -3145,21 +3145,54 @@ def process_data(data, filters):
 				# Get check-ins for this WO date
 				# Note: get_checkins() may return check-ins from previous day's night shift
 				# that ended on this WO date (e.g., 31-Jan 19:59 IN, 01-Feb 08:00 OUT)
+				########## aditya #######
+				# if first_in_last_out := get_checkins(employee, date_time):
+				# 	# Filter check-ins by checking if they have a linked Attendance record
+				# 	# Check-ins WITH attendance field: belong to a previous shift (e.g., 31-Jan night shift)
+				# 	# Check-ins WITHOUT attendance field: likely incomplete OT work on WO day
+				# 	for ci in first_in_last_out:
+				# 		# Check if this check-in is linked to an Attendance record
+				# 		if frappe.db.get_value("Employee Checkin", {"name": ci.get("employee_checkin")}, "attendance"):
+				# 			# This check-in belongs to a previous shift's attendance record
+				# 			# Don't show times to avoid confusion (previous shift's data)
+				# 			has_checkin_error = False  # No error - it's from a valid previous attendance
+				# 			row["in_time"] = ""
+				# 			row["out_time"] = ""
+				# 		else:
+				# 			# This check-in has no attendance record (incomplete OT work on WO)
+				# 			# Show the check-in times for review
+				# 			row["in_time"] = get_time(first_in_last_out[0].get("time"))
+				# 			row["out_time"] = get_time(first_in_last_out[-1].get("time"))
+
+				########### bhavika  ##############
 				if first_in_last_out := get_checkins(employee, date_time):
-					# Filter check-ins by checking if they have a linked Attendance record
-					# Check-ins WITH attendance field: belong to a previous shift (e.g., 31-Jan night shift)
-					# Check-ins WITHOUT attendance field: likely incomplete OT work on WO day
+					# Ignore check-ins that already belong to another attendance
+					has_previous_attendance = False
+
 					for ci in first_in_last_out:
-						# Check if this check-in is linked to an Attendance record
-						if frappe.db.get_value("Employee Checkin", {"name": ci.get("employee_checkin")}, "attendance"):
-							# This check-in belongs to a previous shift's attendance record
-							# Don't show times to avoid confusion (previous shift's data)
-							has_checkin_error = False  # No error - it's from a valid previous attendance
-							row["in_time"] = ""
-							row["out_time"] = ""
+						if frappe.db.get_value("Employee Checkin", ci.get("employee_checkin"), "attendance"):
+							has_previous_attendance = True
+							break
+
+					if has_previous_attendance:
+						has_checkin_error = False
+						row["in_time"] = ""
+						row["out_time"] = ""
+
+					else:
+						if len(first_in_last_out) % 2 != 0:
+							row["status"] = "ERR"
+
+						if len(first_in_last_out) == 1:
+							# Single punch
+							if first_in_last_out[0].get("type") == "IN":
+								row["in_time"] = get_time(first_in_last_out[0].get("time"))
+								row["out_time"] = ""
+							else:
+								row["in_time"] = ""
+								row["out_time"] = get_time(first_in_last_out[0].get("time"))
 						else:
-							# This check-in has no attendance record (incomplete OT work on WO)
-							# Show the check-in times for review
+							# 2, 3, 4, 5... punches
 							row["in_time"] = get_time(first_in_last_out[0].get("time"))
 							row["out_time"] = get_time(first_in_last_out[-1].get("time"))
 				else:
