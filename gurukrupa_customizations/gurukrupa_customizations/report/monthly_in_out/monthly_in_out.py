@@ -3247,7 +3247,36 @@ def process_data(data, filters):
 		result.append(temp)
 	
 	return result
-	
+
+def get_shift_for_date(employee, check_date, default_shift):
+	"""
+		Resolve the correct Shift Type dict for a specific attendance_date,
+		preferring the Shift Assignment active on that date, falling back
+		to the employee's default_shift only if no assignment covers it.
+	"""
+	assigned_shift = frappe.db.get_value(
+		"Shift Assignment",
+		{
+			"employee": employee,
+			"docstatus": 1,
+			"start_date": ["<=", check_date],
+		},
+		["shift_type", "end_date"],
+		as_dict=True,
+		order_by="start_date desc"
+	)
+	if assigned_shift and (not assigned_shift.end_date or assigned_shift.end_date >= check_date):
+		shift = assigned_shift.shift_type
+	else:
+		shift = default_shift
+
+	shift_det = frappe.db.get_value(
+		"Shift Type", shift,
+		['shift_hours', 'holiday_list', 'start_time', 'end_time', 'early_exit_grace_period'],
+		as_dict=1
+	)
+	return shift_det
+
 def get_columns(filters=None):
 	columns = [
 		{
