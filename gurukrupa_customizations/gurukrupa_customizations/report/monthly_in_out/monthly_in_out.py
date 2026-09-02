@@ -2899,13 +2899,14 @@ def process_data(data, filters):
 	holidays = []
 	wo = []
 	emp_det = frappe.db.get_value("Employee", employee, ["default_shift","holiday_list","date_of_joining"], as_dict=1)
+	default_shift = emp_det.get("default_shift") #<<< CHANGED
 
 	shift = ''
 	for row in data:
 		shift = row.shift_name
 
 	if not shift:
-		shift = emp_det.get("default_shift")
+		shift = default_shift  #<<< CHANGED
 
 	shift_det = frappe.db.get_value("Shift Type", shift, ['shift_hours','holiday_list','start_time', 'end_time','early_exit_grace_period'], as_dict=1)
 	shift_hours = flt(shift_det.get("shift_hours"))
@@ -3057,11 +3058,18 @@ def process_data(data, filters):
 				row.status = STATUS.get(row.status) or row.status
 				row.net_wrk_hrs = timedelta(hours=row.shift_hours)
 		else:
-			shift = emp_det.get("default_shift")
-			shift_det = frappe.db.get_value("Shift Type", shift, ['shift_hours','start_time', 'end_time'], as_dict=1)
-			shift_hours = flt(shift_det.get("shift_hours"))
-			shift_name = f"{format_time(shift_det.get('start_time'))} To {format_time(shift_det.get('end_time'))}"
-			row.shift = shift_name
+			# shift = emp_det.get("default_shift")
+			# shift_det = frappe.db.get_value("Shift Type", shift, ['shift_hours','start_time', 'end_time'], as_dict=1)
+			# shift_hours = flt(shift_det.get("shift_hours"))
+			# shift_name = f"{format_time(shift_det.get('start_time'))} To {format_time(shift_det.get('end_time'))}"
+			# row.shift = shift_name
+
+			#<<< CHANGED
+			row_shift_det = get_shift_for_date(employee, row.attendance_date, default_shift)
+			row_shift_hours = flt(row_shift_det.get("shift_hours"))
+			row_shift_name = f"{format_time(row_shift_det.get('start_time'))} To {format_time(row_shift_det.get('end_time'))}"
+			row.shift = row_shift_name
+			#<<< CHANGED END
 
 			leave_status = frappe.db.get_value('Leave Type',{'name': row.status,'is_earned_leave': 1}, ['name'])
 			e_leave_status = frappe.db.get_value('Leave Type', {'name': row.status,'max_continuous_days_allowed': ['>',0]}, ['name'])
@@ -3075,7 +3083,7 @@ def process_data(data, filters):
 				row.net_wrk_hrs = timedelta(0)
 			elif leave_status or e_leave_status:
 				row.status = STATUS.get(row.status) or row.status
-				row.net_wrk_hrs = timedelta(hours=shift_hours)
+				row.net_wrk_hrs = timedelta(hours=row_shift_hours)  #<<< CHANGED
 			else:
 				row.net_wrk_hrs = timedelta(0)
 
@@ -3114,11 +3122,15 @@ def process_data(data, filters):
 			if count %2 != 0:
 				has_checkin_error = True
 		#########################################################
+		# ---- NEW: resolve the shift active on THIS specific date, for OD/WO/Holiday/fallback use ---- #<<< CHANGED
+		date_shift_det = get_shift_for_date(employee, date, default_shift)   # <<< NEW
+		date_shift_hours = flt(date_shift_det.get("shift_hours"))   # <<< NEW
+		date_shift_name = f"{format_time(date_shift_det.get('start_time'))} To {format_time(date_shift_det.get('end_time'))}"  # <<< NEW
 
 		if date in od:
 			status = "OD"
 			row["status"] = status
-			date_time = datetime.combine(getdate(date), get_time(shift_det.start_time))
+			date_time = datetime.combine(getdate(date), get_time(date_shift_det.start_time)) #<<< CHANGED
 			if first_in_last_out := get_checkins(employee,date_time):		
 				row["in_time"] = get_time(first_in_last_out[0].get("time"))
 				row["out_time"] = get_time(first_in_last_out[-1].get("time"))
@@ -3133,7 +3145,7 @@ def process_data(data, filters):
 				row["status"] = "WO"
 				status = "WO"
 				row["status"] = status
-				date_time = datetime.combine(getdate(date), get_time(shift_det.start_time))
+				date_time = datetime.combine(getdate(date), get_time(date_shift_det.start_time))  #<<< CHANGED
 				
 				################## PREVS ##################################
 				# if first_in_last_out := get_checkins(employee,date_time):		
@@ -3208,9 +3220,9 @@ def process_data(data, filters):
 				pass
 			else:
 				status = 'H'
-				row['net_wrk_hrs'] = timedelta(hours=shift_hours)
-				row['total_pay_hrs'] = timedelta(hours=shift_hours)
-			
+				row['net_wrk_hrs'] = timedelta(hours=date_shift_hours)   #<<< CHANGED
+				row['total_pay_hrs'] = timedelta(hours=date_shift_hours) #<<< CHANGED
+
 		else:
 			status = "XX"
 
@@ -3225,7 +3237,7 @@ def process_data(data, filters):
 
 		temp = {
 			"login_date": date,
-			"shift": shift_name,
+			"shift": date_shift_name, #<<< CHANGED
 			"status": status
 		}
 		if not row.get("spent_hours"):
