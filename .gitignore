@@ -3,4 +3,8 @@
 *.egg-info
 *.swp
 tags
+<<<<<<< HEAD
+=======
+gurukrupa_biometric/docs/current
+>>>>>>> 8236cc3 (fix(monthly-in-out): handle time and duration column formatting)
 node_modules/

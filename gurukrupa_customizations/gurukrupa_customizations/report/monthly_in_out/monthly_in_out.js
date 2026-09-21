@@ -194,19 +194,32 @@ frappe.query_reports["Monthly In-Out"] = {
 	],
 	"formatter": function(value, row, column, data, default_formatter) {
 		value = default_formatter(value, row, column, data);
-		var time_columns = ['in_time','out_time','spent_hours','late_hrs','early_hrs','p_out_hrs','net_wrk_hrs','ot_hours','total_pay_hrs']
+
+		// Real clock times — always < 24:00:00, safe to run through
+		// frappe.datetime.str_to_user (which parses via moment).
+		var clock_columns = ['in_time', 'out_time'];
+		// Keep duration values as-is, as they can exceed 24 hours (e.g. 26:40:00).
+		// Do not format them as time-of-day values.
+		var duration_columns = [
+			'spent_hours', 'late_hrs', 'early_hrs', 'p_out_hrs',
+			'net_wrk_hrs', 'ot_hours', 'total_pay_hrs'
+		];
+
 		if (data && !data.login_date) {
 			value = $(`<span>${value}</span>`);
 			var $value = $(value).css("font-weight", "bold");
 			value = $value.wrap("<p></p>").parent().html();
 		}
-		else if (time_columns.includes(column.id) && data.attendance_date) {
+		else if (clock_columns.includes(column.id) && data.attendance_date) {
 			value = frappe.datetime.str_to_user(value, true)
 			if (data.late_entry && ["in_time", "out_time"].includes(column.id)) {
 				value = $(`<span>${value}</span>`);
 				var $value = $(value).css("color", "red");
 				value = $value.wrap("<p></p>").parent().html();
 			}
+		}
+		else if (duration_columns.includes(column.id) && data.attendance_date) {
+		// Duration is already formatted; leave the value unchanged and only style it.
 			if (column.id == "ot_hours") {
 				value = $(`<span>${value}</span>`);
 				var $value = $(value).css("color", "green");
