@@ -201,7 +201,11 @@ frappe.query_reports["Monthly In-Out"] = {
 			value = $value.wrap("<p></p>").parent().html();
 		}
 		else if (time_columns.includes(column.id) && data.attendance_date) {
-			value = frappe.datetime.str_to_user(value, true)
+			// duration columns can exceed 24 hours ("28:00:00"); moment cannot
+			// parse those, so only clock times go through str_to_user
+			if (["in_time", "out_time"].includes(column.id)) {
+				value = frappe.datetime.str_to_user(value, true);
+			}
 			if (data.late_entry && ["in_time", "out_time"].includes(column.id)) {
 				value = $(`<span>${value}</span>`);
 				var $value = $(value).css("color", "red");
