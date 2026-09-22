@@ -2803,8 +2803,22 @@ def get_data(filters=None):
 
 	data = process_data(data, filters)
 	totals = get_totals(data, filters.get("employee"))
-	
+
 	data += totals
+
+	# TIME values above 24 hours come back as timedelta and get serialized
+	# as "1 day, 4:00:00", which the UI cannot parse (Invalid Date).
+	# Normalize every duration column to an "H:MM:SS" string before sending.
+	time_keys = ["in_time", "out_time", "spent_hours", "late_hrs", "early_hrs",
+		"p_out_hrs", "net_wrk_hrs", "ot_hours", "total_pay_hrs"]
+	for row in data:
+		for key in time_keys:
+			val = row.get(key)
+			if isinstance(val, timedelta):
+				secs = int(val.total_seconds())
+				sign = "-" if secs < 0 else ""
+				secs = abs(secs)
+				row[key] = f"{sign}{secs // 3600}:{(secs % 3600) // 60:02d}:{secs % 60:02d}"
 
 	return data
 
