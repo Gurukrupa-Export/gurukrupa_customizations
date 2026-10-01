@@ -97,45 +97,45 @@ def get_data(filters=None):
 		Attendance.out_time
 	)
 	# --- NEW: clamped deduction subquery (separate from display subquery) --- #<-- changes
-    pol_deduction_subquery = (
-        frappe.qb.from_(PersonalOutLog)
-        .select(
-            IfNull(Sum(
-            IF(
-                TIME(PersonalOutLog.out_time) > TIME(shift_end), # NEW: out_time already past shift end?
-                0,                                               # → this personal out shouldn't count at all
-                TIME_TO_SEC(
-                    TIMEDIFF(
-                        IF(
-                            TIME(PersonalOutLog.in_time) > TIME(shift_end),
-                            TIME(shift_end),
-                            PersonalOutLog.in_time
-                        ),
-                        PersonalOutLog.out_time
-                    )
-                )
-            )
-        ), 0)
-        )
-        .where(
-            (PersonalOutLog.is_cancelled == 0)
-            & (PersonalOutLog.employee == Attendance.employee)
-            & (PersonalOutLog.date == Attendance.attendance_date)
-        )
-    )
+	pol_deduction_subquery = (
+		frappe.qb.from_(PersonalOutLog)
+		.select(
+			IfNull(Sum(
+			IF(
+				TIME(PersonalOutLog.out_time) > TIME(shift_end), # NEW: out_time already past shift end?
+				0,                                               # → this personal out shouldn't count at all
+				TIME_TO_SEC(
+					TIMEDIFF(
+						IF(
+							TIME(PersonalOutLog.in_time) > TIME(shift_end),
+							TIME(shift_end),
+							PersonalOutLog.in_time
+						),
+						PersonalOutLog.out_time
+					)
+				)
+			)
+		), 0)
+		)
+		.where(
+			(PersonalOutLog.is_cancelled == 0)
+			& (PersonalOutLog.employee == Attendance.employee)
+			& (PersonalOutLog.date == Attendance.attendance_date)
+		)
+	)
 	
 	query = (
 		frappe.qb.from_(Attendance)
 		.left_join(Employee).on(Attendance.employee == Employee.name)
 		# .left_join(ShiftType).on(Attendance.shift == ShiftType.name)
 		.left_join(ShiftAssignment).on(
-      		(Attendance.employee == ShiftAssignment.employee) &
+			(Attendance.employee == ShiftAssignment.employee) &
 			(Attendance.attendance_date.between(ShiftAssignment.start_date, ShiftAssignment.end_date)) 
-   			# & (ShiftAssignment.shift_type == Attendance.shift)
-        )
+			# & (ShiftAssignment.shift_type == Attendance.shift)
+		)
 		.left_join(ShiftType).on(
 			( (ShiftAssignment.shift_type.isnotnull()) & (ShiftAssignment.shift_type == ShiftType.name) ) 
-   			|
+			|
 			( (ShiftAssignment.shift_type.isnull()) & (Attendance.shift == ShiftType.name) )
 		)
 		.left_join(pol_subquery).on(
