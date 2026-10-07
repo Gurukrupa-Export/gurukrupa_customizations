@@ -4,7 +4,7 @@
 import frappe
 from frappe.model.document import Document
 from frappe.utils import getdate
-from gke_customization.gke_hrms.doctype.monthly_in_out_log.monthly_in_out_log import get_attendance_details_by_date, fmt_td_or_value
+from gke_customization.gke_hrms.doctype.monthly_in_out_log.monthly_in_out_log import get_attendance_details_by_date, fmt_td_or_value, to_duration_seconds
 
 
 class OTLog(Document):
@@ -50,7 +50,7 @@ class OTLog(Document):
 
 			record = records[0]
 
-			mil.db_set("spent_hrs", fmt_td_or_value(record.get("spent_hrs")))
+			mil.db_set("spent_hrs", to_duration_seconds(record.get("spent_hrs")))
 			mil.db_set("net_wrk_hrs" , fmt_td_or_value(record.get("net_wrk_hrs")))
 			mil.db_set("p_out_hrs", fmt_td_or_value(record.get("p_out_hrs")))
 			mil.db_set("ot_hrs", fmt_td_or_value(record.get("ot_hours"))) 
