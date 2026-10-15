@@ -1,0 +1,5 @@
+[pre_model_sync]
+
+[post_model_sync]
+
+gurukrupa_customizations.patches.remove_employee_reports_to_mandatory
