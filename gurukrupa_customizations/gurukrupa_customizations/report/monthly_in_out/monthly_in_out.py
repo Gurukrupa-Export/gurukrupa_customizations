@@ -23,6 +23,34 @@ STATUS = {
 }
 
 def execute(filters=None):
+	if filters.get("employee"):
+		dates = frappe.db.get_value(
+			"Employee",
+			filters.get("employee"),
+			["date_of_joining", "relieving_date"],
+			as_dict=True
+		)
+		joining_date = dates.date_of_joining
+		relieving_date = dates.relieving_date
+
+		if relieving_date and (getdate(filters.get("from_date")) > relieving_date):
+			frappe.msgprint(_("Employee {0} was relieved on {1}. ").format(filters.get("employee"), relieving_date))
+			return get_columns(filters), []
+
+		if relieving_date and (getdate(filters.get("to_date")) > relieving_date):
+			frappe.msgprint(_("Employee {0} was relieved on {1}. Showing data only up to the relieving date.").format(filters.get("employee"), relieving_date))
+
+		start_date = getdate(filters.get("from_date"))
+		if joining_date and (getdate(filters.get("from_date")) <= joining_date <= getdate(filters.get("to_date"))):
+			start_date = joining_date
+
+		end_date = getdate(filters.get("to_date"))
+		if relieving_date and (getdate(filters.get("from_date")) <= relieving_date <= getdate(filters.get("to_date"))):
+			end_date = relieving_date
+
+		filters["from_date"] = start_date
+		filters["to_date"] = end_date
+
 	columns = get_columns(filters)
 	data = get_data(filters)
 	return columns, data
@@ -96,33 +124,33 @@ def get_data(filters=None):
 		shift_end,
 		Attendance.out_time
 	)
-	# --- NEW: clamped deduction subquery (separate from display subquery) --- #<-- changes
-	pol_deduction_subquery = (
-		frappe.qb.from_(PersonalOutLog)
-		.select(
-			IfNull(Sum(
-			IF(
-				TIME(PersonalOutLog.out_time) > TIME(shift_end), # NEW: out_time already past shift end?
-				0,                                               # → this personal out shouldn't count at all
-				TIME_TO_SEC(
-					TIMEDIFF(
-						IF(
-							TIME(PersonalOutLog.in_time) > TIME(shift_end),
-							TIME(shift_end),
-							PersonalOutLog.in_time
-						),
-						PersonalOutLog.out_time
-					)
-				)
-			)
-		), 0)
-		)
-		.where(
-			(PersonalOutLog.is_cancelled == 0)
-			& (PersonalOutLog.employee == Attendance.employee)
-			& (PersonalOutLog.date == Attendance.attendance_date)
-		)
-	)
+	# --- NEW: clamped deduction subquery (separate from display subquery) --- #<-- changes1
+	# pol_deduction_subquery = (
+	# 	frappe.qb.from_(PersonalOutLog)
+	# 	.select(
+	# 		IfNull(Sum(
+	# 		IF(
+	# 			TIME(PersonalOutLog.out_time) > TIME(shift_end), # NEW: out_time already past shift end?
+	# 			0,                                               # → this personal out shouldn't count at all
+	# 			TIME_TO_SEC(
+	# 				TIMEDIFF(
+	# 					IF(
+	# 						TIME(PersonalOutLog.in_time) > TIME(shift_end),
+	# 						TIME(shift_end),
+	# 						PersonalOutLog.in_time
+	# 					),
+	# 					PersonalOutLog.out_time
+	# 				)
+	# 			)
+	# 		)
+	# 	), 0)
+	# 	)
+	# 	.where(
+	# 		(PersonalOutLog.is_cancelled == 0)
+	# 		& (PersonalOutLog.employee == Attendance.employee)
+	# 		& (PersonalOutLog.date == Attendance.attendance_date)
+	# 	)
+	# )
 	
 	query = (
 		frappe.qb.from_(Attendance)
@@ -193,7 +221,7 @@ def get_data(filters=None):
 
 			
 			pol_subquery.hrs.as_('p_out_hrs'),
-			pol_deduction_subquery.as_('p_out_deduction_hrs'),  # <-- changed from pol_subquery.hrs  #<-- changes
+			# pol_deduction_subquery.as_('p_out_deduction_hrs'),  # <-- changed from pol_subquery.hrs  #<-- changes1
 			# SEC_TO_TIME(
 			# 	IF(
 			# 		# FIXED: Check for LWP first - force 0 hours
@@ -246,7 +274,7 @@ def get_data(filters=None):
 							TIMEDIFF(effective_out, effective_in)
 						)
 						# - IfNull(TIME_TO_SEC(pol_subquery.hrs), 0)
-						- pol_deduction_subquery   # <-- changed from pol_subquery.hrs #<-- changes
+						# - pol_deduction_subquery   # <-- changed from pol_subquery.hrs #<-- changes1
 					),
 					0
 				)
@@ -282,6 +310,51 @@ def get_data(filters=None):
 	data += totals
 
 	return data
+
+def get_personal_out_deductions(employee, from_date, to_date, default_shift):
+	"""
+		One flat query (no correlation to Attendance) — returns
+		{attendance_date: deduction_in_seconds} for the employee's Personal
+		Out Logs in range. A log whose out_time is already past shift end
+		contributes 0 (doesn't count at all). Otherwise, the in_time side
+		is clamped to shift end before computing the gap.
+		Called ONCE per report run, inside process_data(); the resulting
+		per-row value is then reused by get_totals() with no extra query.
+	"""
+	logs = frappe.db.get_all(
+		"Personal Out Log",
+		filters={
+			"employee": employee,
+			"date": ["between", [from_date, to_date]],
+			"is_cancelled": 0,
+		},
+		fields=["date", "in_time", "out_time"]
+	)
+
+	deductions = {}
+	shift_end_cache = {}
+
+	for log in logs:
+		if log.date not in shift_end_cache:
+			shift_det = get_shift_for_date(employee, log.date, default_shift)
+			shift_end_cache[log.date] = shift_det.get("end_time")
+		shift_end = shift_end_cache[log.date]
+
+		if not shift_end or not log.out_time or not log.in_time:
+			continue
+
+		# out_time already past shift end -> this log contributes nothing
+		if log.out_time > shift_end:
+			continue
+
+		in_time = log.in_time if log.in_time <= shift_end else shift_end
+		seconds = (in_time - log.out_time).total_seconds()
+		if seconds < 0:
+			seconds = 0
+
+		deductions[log.date] = deductions.get(log.date, 0) + seconds
+
+	return deductions
 
 def get_totals(data, employee):	
 	totals = {
@@ -501,8 +574,17 @@ def process_data(data, filters):
 			}, as_dict=1)
 		wo = [row.holiday_date for row in holidays if row.weekly_off]
 		holidays = [row.holiday_date for row in holidays if not row.weekly_off]
-
+	# -----------------------------------------------------------------
+	# NEW: compute the clamped personal-out deduction ONCE here, as a
+	# plain dict keyed by date. Replaces the old correlated SQL subquery.  <--changes1
+	# -----------------------------------------------------------------
+	personal_out_deductions = get_personal_out_deductions(employee, from_date, to_date, default_shift)
 	for row in data:
+		# NEW: attach this row's deduction (seconds) before any of the
+		# logic below, so both the grace-period branch and get_totals()
+		# can read row.p_out_deduction_hrs without re-querying. <--changes1
+		row["p_out_deduction_hrs"] = personal_out_deductions.get(row.attendance_date, 0)
+		
 		# for security grace period 45 min
 		if grace_period != 0:
 			if not (row.early_hrs): 
@@ -524,6 +606,13 @@ def process_data(data, filters):
 				else:
 					row.net_wrk_hrs = timedelta(hours=shift_hours)
 					row.total_pay_hrs = row.net_wrk_hrs + (row.ot_hours or timedelta(0))
+			else: #changes1
+				# NEW: when no grace period, net_wrk_hrs from SQL no longer
+				# has the deduction baked in (it was removed from the SQL
+				# expression) — subtract it here so non-grace rows stay correct.
+				ded = timedelta(seconds=row.p_out_deduction_hrs or 0)
+				net = (row.net_wrk_hrs or timedelta(0)) - ded
+				row.net_wrk_hrs = net if net > timedelta(0) else timedelta(0)
 
 		if row.lh:
 			row.status = STATUS.get(row.status) or 'LH'
