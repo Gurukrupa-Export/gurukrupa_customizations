@@ -85,13 +85,13 @@ frappe.query_reports["Monthly In-Out"] = {
 				if(filters.company || filters.department){
 					filters.status = ["not in", ["Inactive", "Left"]];	
 				}
-				console.log('filters',filters, txt);
+				// console.log('filters',filters, txt);
 
 				return frappe.db.get_link_options('Employee', txt, filters);
 			},
 			"on_change": function(query_report){
 				var emp_list = query_report.get_filter_value('employees')
-				console.log('emp_list', emp_list)
+				// console.log('emp_list', emp_list)
 				query_report.current_emp = 0
 				query_report.emp_count = emp_list.length
 				set_employee(query_report, query_report.current_emp)
@@ -247,7 +247,7 @@ frappe.query_reports["Monthly In-Out"] = {
 					"employee": emp
 				});
 			}
-			console.log('update done...... 16-10');
+			console.log('update done...... 22-10');
 		}).addClass("btn-primary")
 		fetch_employees(report)
 	}
@@ -300,7 +300,7 @@ function fetch_employees(query_report) {
 				query_report.set_filter_value("employee", null);
 			}
 		});
-		console.log(filters);
+		// console.log(filters);
 	}
 	else {
 		query_report.emp_count = 0

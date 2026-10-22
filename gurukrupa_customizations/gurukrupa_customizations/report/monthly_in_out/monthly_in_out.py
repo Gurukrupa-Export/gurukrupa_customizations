@@ -606,13 +606,13 @@ def process_data(data, filters):
 				else:
 					row.net_wrk_hrs = timedelta(hours=shift_hours)
 					row.total_pay_hrs = row.net_wrk_hrs + (row.ot_hours or timedelta(0))
-			else: #changes1
-				# NEW: when no grace period, net_wrk_hrs from SQL no longer
-				# has the deduction baked in (it was removed from the SQL
-				# expression) — subtract it here so non-grace rows stay correct.
-				ded = timedelta(seconds=row.p_out_deduction_hrs or 0)
-				net = (row.net_wrk_hrs or timedelta(0)) - ded
-				row.net_wrk_hrs = net if net > timedelta(0) else timedelta(0)
+		else: #<-- changes2
+			# NEW: when no grace period, net_wrk_hrs from SQL no longer
+			# has the deduction baked in (it was removed from the SQL
+			# expression) — subtract it here so non-grace rows stay correct.
+			ded = timedelta(seconds=row.p_out_deduction_hrs or 0)
+			net = (row.net_wrk_hrs or timedelta(0)) - ded
+			row.net_wrk_hrs = net if net > timedelta(0) else timedelta(0)
 
 		if row.lh:
 			row.status = STATUS.get(row.status) or 'LH'
