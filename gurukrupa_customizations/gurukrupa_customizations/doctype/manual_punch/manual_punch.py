@@ -201,7 +201,8 @@ def get_checkins(employee, shift_datetime):
 					log_type as type,
 					time,
 					source,
-					name as employee_checkin
+					name as employee_checkin,
+					attendance
 				FROM `tabEmployee Checkin`
 				WHERE employee = %(employee)s
 					AND ({or_clause})
