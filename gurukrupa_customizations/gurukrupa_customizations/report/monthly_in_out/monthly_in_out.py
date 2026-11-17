@@ -124,7 +124,7 @@ def get_data(filters=None):
 		shift_end,
 		Attendance.out_time
 	)
-	# --- NEW: clamped deduction subquery (separate from display subquery) --- #<-- changes
+	# --- NEW: clamped deduction subquery (separate from display subquery) --- #<-- changes1
 	# pol_deduction_subquery = (
 	# 	frappe.qb.from_(PersonalOutLog)
 	# 	.select(
@@ -180,7 +180,7 @@ def get_data(filters=None):
 			IF( ShiftAssignment.shift_type.isnotnull(),
 				ShiftAssignment.shift_type,
 				# Attendance.shift
-			   	Employee.default_shift
+				Employee.default_shift
 			).as_("shift_name"),
 
 			Concat(TIME_FORMAT(ShiftType.start_time, "%H:%i:%s"), " TO ", TIME_FORMAT(ShiftType.end_time, "%H:%i:%s")).as_('shift'),
@@ -221,7 +221,7 @@ def get_data(filters=None):
 
 			
 			pol_subquery.hrs.as_('p_out_hrs'),
-			# pol_deduction_subquery.as_('p_out_deduction_hrs'),  # <-- changed from pol_subquery.hrs  #<-- changes
+			# pol_deduction_subquery.as_('p_out_deduction_hrs'),  # <-- changed from pol_subquery.hrs  #<-- changes1
 			# SEC_TO_TIME(
 			# 	IF(
 			# 		# FIXED: Check for LWP first - force 0 hours
@@ -274,7 +274,7 @@ def get_data(filters=None):
 							TIMEDIFF(effective_out, effective_in)
 						)
 						# - IfNull(TIME_TO_SEC(pol_subquery.hrs), 0)
-						# - pol_deduction_subquery   # <-- changed from pol_subquery.hrs #<-- changes
+						# - pol_deduction_subquery   # <-- changed from pol_subquery.hrs #<-- changes1
 					),
 					0
 				)
@@ -572,13 +572,13 @@ def process_data(data, filters):
 		holidays = [row.holiday_date for row in holidays if not row.weekly_off]
 	# -----------------------------------------------------------------
 	# NEW: compute the clamped personal-out deduction ONCE here, as a
-	# plain dict keyed by date. Replaces the old correlated SQL subquery.  <--changes
+	# plain dict keyed by date. Replaces the old correlated SQL subquery.  <--changes1
 	# -----------------------------------------------------------------
 	personal_out_deductions = get_personal_out_deductions(employee, from_date, to_date, default_shift)
 	for row in data:
 		# NEW: attach this row's deduction (seconds) before any of the
 		# logic below, so both the grace-period branch and get_totals()
-		# can read row.p_out_deduction_hrs without re-querying. <--changes
+		# can read row.p_out_deduction_hrs without re-querying. <--changes1
 		row["p_out_deduction_hrs"] = personal_out_deductions.get(row.attendance_date, 0)
 		
 		# for security grace period 45 min
@@ -602,7 +602,7 @@ def process_data(data, filters):
 				else:
 					row.net_wrk_hrs = timedelta(hours=shift_hours)
 					row.total_pay_hrs = row.net_wrk_hrs + (row.ot_hours or timedelta(0))
-		else:
+		else: #<-- changes2
 			# NEW: when no grace period, net_wrk_hrs from SQL no longer
 			# has the deduction baked in (it was removed from the SQL
 			# expression) — subtract it here so non-grace rows stay correct.
