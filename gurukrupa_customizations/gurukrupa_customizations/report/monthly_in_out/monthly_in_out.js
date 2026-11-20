@@ -247,7 +247,7 @@ frappe.query_reports["Monthly In-Out"] = {
 					"employee": emp
 				});
 			}
-			console.log('update done...... 22-10');
+			console.log('update done...... 20-11-26');
 		}).addClass("btn-primary")
 		fetch_employees(report)
 	}
