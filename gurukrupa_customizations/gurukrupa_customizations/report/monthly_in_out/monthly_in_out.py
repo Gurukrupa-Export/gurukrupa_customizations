@@ -607,7 +607,8 @@ def process_data(data, filters):
 				if row.net_wrk_hrs.total_seconds() > shift_hours_in_sec or (shift_hours_in_sec - row.net_wrk_hrs.total_seconds()) < 60:
 					row.net_wrk_hrs = timedelta(hours=row.shift_hours)
 			leave_status = frappe.db.get_value('Leave Type',{'name': row.status,'is_earned_leave': 1}, ['name'])
-			if leave_status:
+			is_ppl = frappe.db.get_value('Leave Type',{'name': row.status,'is_ppl': 1}, ['name']) #17-11-26
+			if leave_status or is_ppl: #17-11-26
 				row.status = STATUS.get(row.status) or row.status
 				row.net_wrk_hrs = timedelta(hours=row.shift_hours)
 		else:
@@ -813,6 +814,7 @@ def get_shift_for_date(employee, check_date, default_shift):
 			"employee": employee,
 			"docstatus": 1,
 			"start_date": ["<=", check_date],
+			"end_date": [">=", check_date], #17-11-26
 		},
 		["shift_type", "end_date"],
 		as_dict=True,
