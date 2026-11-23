@@ -180,6 +180,8 @@ def get_checkins(employee, shift_datetime):
 	if not (employee and shift_datetime):
 		return []
 	shift_timings = get_employee_shift_timings(employee, get_datetime(shift_datetime), True)[1] 	#for current shift
+	if not shift_timings:
+		return []
 
 	or_conditions = ["time BETWEEN %(start)s AND %(end)s"]
 	params = {
@@ -188,7 +190,11 @@ def get_checkins(employee, shift_datetime):
 		'end': get_datetime_str(shift_timings.actual_end)
 	}
     
-	attendance = frappe.db.get_value("Attendance", {"employee": employee, "attendance_date": getdate(shift_datetime), "docstatus":1})
+	attendance = frappe.db.get_value(
+		"Attendance",
+		{"employee": employee, "attendance_date": getdate(shift_datetime), "docstatus": 1},
+		order_by="creation asc",
+	)
 	if attendance:
 		or_conditions.append("attendance = %(attendance)s")
 		params['attendance'] = attendance
@@ -201,7 +207,8 @@ def get_checkins(employee, shift_datetime):
 					log_type as type,
 					time,
 					source,
-					name as employee_checkin
+					name as employee_checkin,
+					attendance
 				FROM `tabEmployee Checkin`
 				WHERE employee = %(employee)s
 					AND ({or_clause})
