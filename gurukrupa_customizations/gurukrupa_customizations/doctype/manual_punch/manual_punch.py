@@ -4,7 +4,8 @@
 import frappe
 from frappe.model.document import Document
 from frappe import _
-from frappe.utils import cint, add_to_date, get_datetime, get_datetime_str, getdate, get_time
+from frappe.query_builder.functions import Date
+from frappe.utils import cint, get_datetime, getdate, get_time
 from datetime import datetime
 import itertools
 from hrms.hr.doctype.employee_checkin.employee_checkin import mark_attendance_and_link_log
@@ -35,8 +36,9 @@ class ManualPunch(Document):
 			frappe.throw(_("Punch must be in between {0} and {1}").format(shift_det.actual_start, shift_det.actual_end))
 
 	def validate_od_punch(self):
-		if self.for_od or any([row.source for row in (self.details or []) if row.source == "Outdoor Duty"]):
-			if len(self.details) > 2:
+		details = self.details or []
+		if self.for_od or any(row.source == "Outdoor Duty" for row in details):
+			if len(details) > 2:
 				frappe.throw(_("Only single checkin for IN and OUT are allowed for OT"))
 
 	def update_emp_checkin(self):
@@ -111,7 +113,7 @@ def process_attendance(employee, shift_type, date):
 		logs, key=lambda x: (x["employee"], x["shift_actual_start"])
 	):
 		if not doc.should_mark_attendance(employee, date):
-				continue
+			continue
 
 		single_shift_logs = list(group)
 		(
@@ -135,8 +137,8 @@ def process_attendance(employee, shift_type, date):
 			doc.name,
 		)
 
-	for employee in doc.get_assigned_employees(doc.process_attendance_after, True):
-		doc.mark_absent_for_dates_with_no_attendance(employee)
+	for assigned_employee in doc.get_assigned_employees(doc.process_attendance_after, True):
+		doc.mark_absent_for_dates_with_no_attendance(assigned_employee)
 
 @frappe.whitelist()
 def cancel_linked_records(employee, date):
@@ -144,78 +146,88 @@ def cancel_linked_records(employee, date):
 	po = frappe.get_list("Personal Out Log",{"employee":employee, "date":date, "is_cancelled":0},pluck="name")
 	if ot:
 		OT_Log = frappe.qb.DocType("OT Log")
-		query_ot = (
-            frappe.qb.update(OT_Log)
-            .set(OT_Log.is_cancelled, 1)
-            .where(OT_Log.name.isin(ot))
-        )
-		query_ot.run()
+		(
+			frappe.qb.update(OT_Log)
+			.set(OT_Log.is_cancelled, 1)
+			.where(OT_Log.name.isin(ot))
+		).run()
 		frappe.msgprint(_("Existing OT Records are cancelled"))
 	if po:
 		Personal_Out_Log = frappe.qb.DocType("Personal Out Log")
-		query_po = (
-            frappe.qb.update(Personal_Out_Log)
-            .set(Personal_Out_Log.is_cancelled, 1)
-            .where(Personal_Out_Log.name.isin(po))
-        )
-		query_po.run()
+		(
+			frappe.qb.update(Personal_Out_Log)
+			.set(Personal_Out_Log.is_cancelled, 1)
+			.where(Personal_Out_Log.name.isin(po))
+		).run()
 	return {"ot":ot, "po": po}
 
-# def get_checkins(employee, shift_datetime):
-# 	if not (employee and shift_datetime):
-# 		return []
-# 	shift_timings = get_employee_shift_timings(employee, get_datetime(shift_datetime), True)[1] 	#for current shift
-# 	or_filter = {
-# 			"time":["between",[get_datetime_str(shift_timings.actual_start), get_datetime_str(shift_timings.actual_end)]]
-# 	}
-# 	fields = ["date(time) as date", "log_type as type", "time", "source", "name as employee_checkin"]
-# 	attendance = frappe.db.get_value("Attendance", {"employee": employee, "attendance_date": getdate(shift_datetime), "docstatus":1})
-# 	if attendance:
-# 		or_filter["attendance"] = attendance
-# 	data = frappe.get_list("Employee Checkin", filters= {"employee": employee}, or_filters = or_filter, fields=fields, order_by='time')
-# 	if not data:
-# 		return []
-# 	return data
 def get_checkins(employee, shift_datetime):
 	if not (employee and shift_datetime):
 		return []
-	shift_timings = get_employee_shift_timings(employee, get_datetime(shift_datetime), True)[1] 	#for current shift
-	if not shift_timings:
-		return []
+	return get_checkins_for_dates(employee, [shift_datetime]).get(shift_datetime, [])
 
-	or_conditions = ["time BETWEEN %(start)s AND %(end)s"]
-	params = {
-		'employee': employee,
-		'start': get_datetime_str(shift_timings.actual_start),
-		'end': get_datetime_str(shift_timings.actual_end)
-	}
-    
-	attendance = frappe.db.get_value(
+
+def get_checkins_for_dates(employee, shift_datetimes):
+	"""Return `{shift_datetime: [checkin rows]}` for one employee, matching `get_checkins` per date.
+
+	A checkin belongs to a date when its time falls inside that date's actual shift window,
+	or when it is linked to that date's submitted Attendance.
+	"""
+	checkins_by_date = {shift_datetime: [] for shift_datetime in shift_datetimes if shift_datetime}
+	if not (employee and checkins_by_date):
+		return checkins_by_date
+
+	shift_windows = {}
+	for shift_datetime in checkins_by_date:
+		current_shift = get_employee_shift_timings(employee, get_datetime(shift_datetime), True)[1]
+		if current_shift:
+			shift_windows[shift_datetime] = (current_shift.actual_start, current_shift.actual_end)
+
+	if not shift_windows:
+		return checkins_by_date
+
+	attendance_by_date = {}
+	attendance_list = frappe.get_all(
 		"Attendance",
-		{"employee": employee, "attendance_date": getdate(shift_datetime), "docstatus": 1},
+		filters={
+			"employee": employee,
+			"attendance_date": ["in", list({getdate(shift_datetime) for shift_datetime in shift_windows})],
+			"docstatus": 1,
+		},
+		fields=["name", "attendance_date"],
 		order_by="creation asc",
 	)
-	if attendance:
-		or_conditions.append("attendance = %(attendance)s")
-		params['attendance'] = attendance
+	for attendance in attendance_list:
+		attendance_by_date.setdefault(getdate(attendance.attendance_date), attendance.name)
 
-	or_clause = " OR ".join(or_conditions)
+	window_start = min(start for start, end in shift_windows.values())
+	window_end = max(end for start, end in shift_windows.values())
 
-	data = frappe.db.sql(f"""
-				SELECT
-					DATE(time) as date,
-					log_type as type,
-					time,
-					source,
-					name as employee_checkin,
-					attendance
-				FROM `tabEmployee Checkin`
-				WHERE employee = %(employee)s
-					AND ({or_clause})
-				ORDER BY time
-	""", params, as_dict=1)
+	EmployeeCheckin = frappe.qb.DocType("Employee Checkin")
+	checkin_condition = EmployeeCheckin.time[window_start:window_end]
+	if attendance_by_date:
+		checkin_condition = checkin_condition | EmployeeCheckin.attendance.isin(list(attendance_by_date.values()))
 
-	if not data:
-		return []
+	checkins = (
+		frappe.qb.from_(EmployeeCheckin)
+		.select(
+			Date(EmployeeCheckin.time).as_("date"),
+			EmployeeCheckin.log_type.as_("type"),
+			EmployeeCheckin.time,
+			EmployeeCheckin.source,
+			EmployeeCheckin.name.as_("employee_checkin"),
+			EmployeeCheckin.attendance,
+		)
+		.where((EmployeeCheckin.employee == employee) & checkin_condition)
+		.orderby(EmployeeCheckin.time)
+	).run(as_dict=True)
 
-	return data
+	for shift_datetime, (actual_start, actual_end) in shift_windows.items():
+		attendance = attendance_by_date.get(getdate(shift_datetime))
+		checkins_by_date[shift_datetime] = [
+			frappe._dict(checkin)
+			for checkin in checkins
+			if actual_start <= checkin.time <= actual_end or (attendance and checkin.attendance == attendance)
+		]
+
+	return checkins_by_date
