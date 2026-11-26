@@ -161,6 +161,12 @@ frappe.query_reports["Monthly In-Out"] = {
 			"read_only": 1
 		},
 		{
+			"label":"Branch",
+			"fieldtype": "Data",
+			"fieldname": "branch",
+			"read_only": 1
+		},
+		{
 			"label":"Shift Hours",
 			"fieldtype": "Float",
 			"fieldname": "shift_hrs",
@@ -271,12 +277,13 @@ function set_employee_details(query_report, employee) {
 
 	console.log('set_employee_details', employee);
 
-	frappe.db.get_value("Employee", employee, ["employee_name", "department", "designation", "attendance_device_id", "default_shift"], (r)=> {
+	frappe.db.get_value("Employee", employee, ["employee_name", "department", "designation", "attendance_device_id", "default_shift","branch"], (r)=> {
 		query_report.set_filter_value({
 			"emp_name": r.employee_name,
 			"designation": r.designation,
 			"emp_department": r.department,
-			"punch_id": r.attendance_device_id
+			"punch_id": r.attendance_device_id,
+			"branch": r.branch
 		});
 		frappe.db.get_value("Shift Type", r.default_shift, "shift_hours", (shift)=>{
 			query_report.set_filter_value({
@@ -320,6 +327,7 @@ function fetch_employees(query_report) {
 			"designation": null,
 			"emp_department": null,
 			"punch_id": null,
+			"branch": null,
 			"shift_hrs": 0
 		});
 	}
