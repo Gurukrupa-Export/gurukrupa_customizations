@@ -258,7 +258,12 @@ frappe.query_reports["Monthly In-Out"] = {
 };
 
 function set_employee(query_report, index, preset = false) {
-	var employees = query_report.get_filter_value('employees')
+	var employees = query_report.get_filter_value('employees') || []
+	var emp = employees[index] || null;
+	
+	set_employee_details(query_report,emp)
+	console.log('set_employee_details - set_employee', emp);
+	
 	query_report.set_filter_value({
 		"cur_employee": employees[index] || null,
 		"employee": preset ? employees[index] : null
