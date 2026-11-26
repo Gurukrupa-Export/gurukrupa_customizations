@@ -114,10 +114,10 @@ frappe.query_reports["Monthly In-Out"] = {
 				let emp =  frappe.query_report.get_filter_value('cur_employee');
 				let employees = query_report.get_filter_value('employees')
 				var idx = employees.indexOf(emp)
-				if (idx>0) {
+				if (idx >= 0) {
 					query_report.current_emp = idx
 				}
-				set_employee_details(query_report)
+				set_employee_details(query_report, emp)
 			},
 		},
 		{
@@ -254,15 +254,23 @@ frappe.query_reports["Monthly In-Out"] = {
 };
 
 function set_employee(query_report, index, preset = false) {
-	var employees = query_report.get_filter_value('employees')
+	var employees = query_report.get_filter_value('employees') || []
+	var emp = employees[index] || null;
+	
+	set_employee_details(query_report,emp)
+	console.log('set_employee_details - set_employee', emp);
+
 	query_report.set_filter_value({
 		"cur_employee": employees[index] || null,
 		"employee": preset ? employees[index] : null
 	});
 }
 
-function set_employee_details(query_report) {
-	var employee = query_report.get_filter_value('cur_employee');
+function set_employee_details(query_report, employee) {
+	// var employee = query_report.get_filter_value('cur_employee');
+
+	console.log('set_employee_details', employee);
+
 	frappe.db.get_value("Employee", employee, ["employee_name", "department", "designation", "attendance_device_id", "default_shift"], (r)=> {
 		query_report.set_filter_value({
 			"emp_name": r.employee_name,
